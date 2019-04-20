@@ -131,6 +131,9 @@ count_parameters(test_layer)
 # enc = Encoder(INPUT_DIM, ENC_EMB_DIM, HID_DIM, N_LAYERS, ENC_DROPOUT)
 transformer_decoder = Decoder(DECODER_HIDDEN_DIM, bert_encoder.config.vocab_size, FILTER_SIZE, DEC_DROPOUT, N_LAYERS)
 
+print("made decoder!")
+count_parameters(transformer_decoder)
+
 autoencoder = Autoencoder(bert_encoder, shrink_net, transformer_decoder, device).to(device)
 
 print(autoencoder(tokens_tensor, tokens_tensor))
