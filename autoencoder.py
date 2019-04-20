@@ -55,10 +55,11 @@ class LSTMDecoder(nn.Module):
 
 
 class Autoencoder(nn.Module):
-    def __init__(self, encoder, decoder, device):
+    def __init__(self, encoder, shrink_net, decoder, device):
         super().__init__()
 
         self.encoder = encoder
+        self.shrink = shrink_net
         self.decoder = decoder
         self.device = device
 
@@ -86,7 +87,7 @@ class Autoencoder(nn.Module):
         outputs = torch.zeros(max_len, batch_size, trg_vocab_size).to(self.device)
 
         # last hidden state of the encoder is used as the initial hidden state of the decoder
-        hidden = self.encoder(src)
+        hidden = self.shrink(self.encoder(src))
         cell = hidden
 
         # first input to the decoder is the <sos> tokens
@@ -95,6 +96,7 @@ class Autoencoder(nn.Module):
         for t in range(1, max_len):
             output, hidden, cell = self.decoder(input, hidden, cell)
             outputs[t] = output
+
             teacher_force = random.random() < teacher_forcing_ratio
             top1 = output.max(1)[1]
             input = (trg[t] if teacher_force else top1)

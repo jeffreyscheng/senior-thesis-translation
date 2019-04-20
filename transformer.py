@@ -6,6 +6,7 @@ import torch.nn.functional as F
 
 import utils
 
+
 # pylint: disable=arguments-differ
 
 
@@ -13,6 +14,18 @@ def initialize_weight(x):
     nn.init.xavier_uniform_(x.weight)
     if x.bias is not None:
         nn.init.constant_(x.bias, 0)
+
+
+class ShrinkNet(nn.Module):
+    def __init__(self, input_dim, output_dim):
+        super(ShrinkNet, self).__init__()
+        hidden_size = math.floor(math.sqrt(input_dim * output_dim))
+
+        self.fc1 = nn.Linear(input_dim, hidden_size)
+        self.fc2 = nn.Linear(hidden_size, output_dim)
+
+    def forward(self, x):
+        return self.fc2(nn.ReLU(self.fc1(x)))
 
 
 class FeedForwardNetwork(nn.Module):
@@ -75,8 +88,8 @@ class MultiHeadAttention(nn.Module):
             if cache is not None:
                 cache['encdec_k'], cache['encdec_v'] = k, v
 
-        q = q.transpose(1, 2)                  # [b, h, q_len, d_k]
-        v = v.transpose(1, 2)                  # [b, h, v_len, d_v]
+        q = q.transpose(1, 2)  # [b, h, q_len, d_k]
+        v = v.transpose(1, 2)  # [b, h, v_len, d_v]
         k = k.transpose(1, 2).transpose(2, 3)  # [b, h, d_k, k_len]
 
         # Scaled Dot-Product Attention.
@@ -219,7 +232,7 @@ class Transformer(nn.Module):
 
         self.t_vocab_embedding = nn.Embedding(t_vocab_size, hidden_size)
         nn.init.normal_(self.t_vocab_embedding.weight, mean=0,
-                        std=hidden_size**-0.5)
+                        std=hidden_size ** -0.5)
         self.t_emb_dropout = nn.Dropout(dropout_rate)
         self.decoder = Decoder(hidden_size, filter_size,
                                dropout_rate, n_layers)
@@ -229,7 +242,7 @@ class Transformer(nn.Module):
                 self.i_vocab_embedding = nn.Embedding(i_vocab_size,
                                                       hidden_size)
                 nn.init.normal_(self.i_vocab_embedding.weight, mean=0,
-                                std=hidden_size**-0.5)
+                                std=hidden_size ** -0.5)
             else:
                 self.i_vocab_embedding = self.t_vocab_embedding
 
@@ -243,8 +256,8 @@ class Transformer(nn.Module):
         max_timescale = 10000.0
         min_timescale = 1.0
         log_timescale_increment = (
-            math.log(float(max_timescale) / float(min_timescale)) /
-            max(num_timescales - 1, 1))
+                math.log(float(max_timescale) / float(min_timescale)) /
+                max(num_timescales - 1, 1))
         inv_timescales = min_timescale * torch.exp(
             torch.arange(num_timescales, dtype=torch.float32) *
             -log_timescale_increment)

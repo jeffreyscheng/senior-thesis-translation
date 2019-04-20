@@ -107,19 +107,19 @@ train_iterator, valid_iterator, test_iterator = BucketIterator.splits(
 
 INPUT_DIM = len(SRC.vocab)
 OUTPUT_DIM = len(TRG.vocab)
-ENC_EMB_DIM = 256
-DEC_EMB_DIM = 256
 HID_DIM = 512
 N_LAYERS = 3
 ENC_DROPOUT = 0.5
 DEC_DROPOUT = 0.5
 
-FILTER_SIZE = 1000
+FILTER_SIZE = 5
+DECODER_HIDDEN_DIM = 3
+shrink_net = ShrinkNet(bert_encoder.config.hidden_size, DECODER_HIDDEN_DIM)
 
 # enc = Encoder(INPUT_DIM, ENC_EMB_DIM, HID_DIM, N_LAYERS, ENC_DROPOUT)
-transformer_decoder = Decoder(bert_encoder.config.hidden_size, bert_encoder.config.vocab_size, FILTER_SIZE, DEC_DROPOUT, N_LAYERS)
+transformer_decoder = Decoder(DECODER_HIDDEN_DIM, bert_encoder.config.vocab_size, FILTER_SIZE, DEC_DROPOUT, N_LAYERS)
 
-autoencoder = Autoencoder(bert_encoder, transformer_decoder, device).to(device)
+autoencoder = Autoencoder(bert_encoder, shrink_net, transformer_decoder, device).to(device)
 
 print(autoencoder(tokens_tensor, tokens_tensor))
 raise ValueError
