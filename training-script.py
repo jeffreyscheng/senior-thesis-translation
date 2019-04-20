@@ -111,8 +111,8 @@ N_LAYERS = 3
 ENC_DROPOUT = 0.5
 DEC_DROPOUT = 0.5
 
-FILTER_SIZE = 5
-DECODER_HIDDEN_DIM = 3
+FILTER_SIZE = 50
+DECODER_HIDDEN_DIM = 30
 shrink_net = ShrinkNet(bert_encoder.config.hidden_size, DECODER_HIDDEN_DIM)
 
 print("made shrink-net!")
