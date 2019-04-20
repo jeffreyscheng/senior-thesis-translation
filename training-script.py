@@ -3,7 +3,6 @@ from transformer import *
 import torch.optim as optim
 from torchtext.datasets import TranslationDataset, Multi30k
 from torchtext.data import Field, BucketIterator
-import spacy
 import math
 import time
 import random
@@ -26,7 +25,7 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 logging.basicConfig(level=logging.INFO)
 
 # Load pre-trained model tokenizer (vocabulary)
-bert_tokenizer = BertTokenizer.from_pretrained('bert-base-multilingual-cased')
+bert_tokenizer = BertTokenizer.from_pretrained('bert-base-cased')
 
 print("loaded Bert Tokenizer")
 
@@ -46,7 +45,7 @@ tokens_tensor = torch.tensor([indexed_tokens])
 segments_tensors = torch.tensor([segments_ids])
 
 # Load pre-trained model (weights)
-bert_encoder = BertModel.from_pretrained('bert-base-multilingual-cased')
+bert_encoder = BertModel.from_pretrained('bert-base-cased')
 bert_encoder.eval()
 
 print("Loaded Bert")
@@ -116,6 +115,19 @@ FILTER_SIZE = 5
 DECODER_HIDDEN_DIM = 3
 shrink_net = ShrinkNet(bert_encoder.config.hidden_size, DECODER_HIDDEN_DIM)
 
+print("made shrink-net!")
+
+test_layer = DecoderLayer(DECODER_HIDDEN_DIM, FILTER_SIZE, DEC_DROPOUT)
+
+def count_parameters(model):
+    val = sum(p.numel() for p in model.parameters() if p.requires_grad)
+    print(val)
+    return val
+
+count_parameters(bert_encoder)
+count_parameters(shrink_net)
+count_parameters(test_layer)
+
 # enc = Encoder(INPUT_DIM, ENC_EMB_DIM, HID_DIM, N_LAYERS, ENC_DROPOUT)
 transformer_decoder = Decoder(DECODER_HIDDEN_DIM, bert_encoder.config.vocab_size, FILTER_SIZE, DEC_DROPOUT, N_LAYERS)
 
@@ -125,8 +137,7 @@ print(autoencoder(tokens_tensor, tokens_tensor))
 raise ValueError
 
 
-def count_parameters(model):
-    return sum(p.numel() for p in model.parameters() if p.requires_grad)
+
 
 
 print(f'The model has {count_parameters(model):,} trainable parameters')
