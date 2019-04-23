@@ -1,4 +1,5 @@
 /.idea
 /.data
+/.vector_cache
 *.pyc
 /__pycache__
