@@ -11,8 +11,11 @@ fixed_vars = {'device': torch.device("cuda:0" if torch.cuda.is_available() else 
               'root_directory': os.path.dirname(__file__),
               'bert_embedding_dim': 768,
               'word_embedding_dim': 100,
-              'gradient_clip': 1
+              'gradient_clip': 1,
+              'model_number': 0
               }
+
+
 
 # attempt 0
 # gru_hyperparameters = {'batch_size': 20,

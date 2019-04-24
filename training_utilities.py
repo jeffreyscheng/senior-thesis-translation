@@ -31,9 +31,9 @@ def train(model, translation_objects, optimizer, criterion, clip, loss_df, num_e
 
         if model.decoder.number_of_batches_seen % 20 == 0:
             # save gru_decoder
-            torch.save(model.decoder, os.path.join(fixed_vars['root_directory'], "gru_decoder.model"))
+            torch.save(model.decoder, os.path.join(fixed_vars['root_directory'], "gru-" + fixed_vars['model_number'], "gru_decoder.model"))
             # save losses
             loss_df = loss_df.append(pd.DataFrame(loss_list), ignore_index=True)
-            loss_df.to_csv(os.path.join(fixed_vars['root_directory'], "loss.csv"))
+            loss_df.to_csv(os.path.join(fixed_vars['root_directory'], "gru-" + fixed_vars['model_number'], "loss.csv"))
             loss_list = []
     return model, loss_df
