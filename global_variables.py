@@ -15,6 +15,7 @@ fixed_vars = {'device': torch.device("cuda:0" if torch.cuda.is_available() else 
               'model_number': 0
               }
 
+safe_mkdir(os.path.join(fixed_vars['root_directory'], 'gru-' + fixed_vars['model_number']))
 
 
 # attempt 0
