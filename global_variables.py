@@ -14,9 +14,18 @@ fixed_vars = {'device': torch.device("cuda:0" if torch.cuda.is_available() else 
               'gradient_clip': 1
               }
 
-gru_hyperparameters = {'batch_size': 20,
+# attempt 0
+# gru_hyperparameters = {'batch_size': 20,
+#                        'gru_layers': 1,
+#                        'gru_dropout': 0.2,
+#                        'learning_rate': 0.001,
+#                        'retrain': True,
+#                        'num_epochs': 200}
+
+# attempt 1
+gru_hyperparameters = {'batch_size': 40,
                        'gru_layers': 1,
-                       'gru_dropout': 0.2,
-                       'learning_rate': 0.001,
+                       'gru_dropout': 0.5,
+                       'learning_rate': 0.0001,
                        'retrain': True,
                        'num_epochs': 200}
