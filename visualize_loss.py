@@ -2,7 +2,7 @@ import pandas as pd
 from global_variables import *
 import matplotlib.pyplot as plt
 
-loss_df = pd.read_csv(os.path.join(fixed_vars['root_directory'], "loss.csv"))
+loss_df = pd.read_csv(os.path.join(fixed_vars['root_directory'], "gru-" + fixed_vars['model_number'], "loss.csv"))
 
 # gca stands for 'get current axis'
 ax = plt.gca()

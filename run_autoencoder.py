@@ -4,7 +4,9 @@ import torch.optim as optim
 from set_up_translation import get_translation_objects
 from training_utilities import train
 import pandas as pd
+import time
 
+tick = time.time()
 translation_objects = get_translation_objects('.en', '.en')
 print("Initialized all training objects.")
 if gru_hyperparameters['retrain']:
@@ -28,4 +30,4 @@ criterion = nn.CrossEntropyLoss(ignore_index=PAD_IDX)
 print("Initialized all torch objects and models.  Now training.")
 
 train(autoencoder, translation_objects, autoencoder_optimizer, criterion, fixed_vars['gradient_clip'], loss_df, gru_hyperparameters['num_epochs'])
-
+print(time.time() - tick)
