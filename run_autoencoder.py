@@ -25,7 +25,11 @@ autoencoder = Autoencoder(translation_objects['bert_encoder'],
                           gru_decoder,
                           fixed_vars['device']).to(fixed_vars['device'])
 autoencoder_optimizer = optim.Adam(autoencoder.parameters(), lr=gru_hyperparameters['learning_rate'])
+<<<<<<< HEAD
 PAD_IDX = 28994
+=======
+PAD_IDX = translation_objects['trg_field'].vocab.stoi['<pad>']
+>>>>>>> 1e61fb0908658fcaf7ea0c9bd4bcb8d2b8a6bffe
 criterion = nn.CrossEntropyLoss(ignore_index=PAD_IDX)
 print("Initialized all torch objects and models.  Now training.")
 
