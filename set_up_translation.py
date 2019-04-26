@@ -23,7 +23,6 @@ def get_translation_objects(input_lang, output_lang):
             return x
 
     def postprocess_replace_pad(batch, y):
-        print('got here')
         return [[replace_tokens(token) for token in sentence_list] for sentence_list in batch]
 
     def get_english_field():
