@@ -12,7 +12,7 @@ fixed_vars = {'device': torch.device("cuda:0" if torch.cuda.is_available() else 
               'bert_embedding_dim': 768,
               'word_embedding_dim': 100,
               'gradient_clip': 1,
-              'model_number': "1"
+              'model_number': "2"
               }
 
 safe_mkdir(os.path.join(fixed_vars['root_directory'], 'gru-' + fixed_vars['model_number']))
@@ -27,9 +27,12 @@ safe_mkdir(os.path.join(fixed_vars['root_directory'], 'gru-' + fixed_vars['model
 #                        'num_epochs': 200}
 
 # attempt 1
+# 40, 1, 0.5, 0.0001, False, 500
+
+# attempt 2
 gru_hyperparameters = {'batch_size': 40,
                        'gru_layers': 1,
                        'gru_dropout': 0.5,
-                       'learning_rate': 0.0001,
-                       'retrain': True,
+                       'learning_rate': 0.00001,
+                       'retrain': False,
                        'num_epochs': 500}
