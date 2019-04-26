@@ -12,10 +12,14 @@ fixed_vars = {'device': torch.device("cuda:0" if torch.cuda.is_available() else 
               'bert_embedding_dim': 768,
               'word_embedding_dim': 100,
               'gradient_clip': 1,
-              'model_number': "1"
+              'gru_model_number': "2",
+              'ffn_model_number': "0"
               }
+fixed_vars['gru_directory'] = os.path.join(fixed_vars['root_directory'], 'gru-' + fixed_vars['gru_model_number'])
+fixed_vars['ffn_directory'] = os.path.join(fixed_vars['root_directory'], 'ffn-' + fixed_vars['ffn_model_number'])
 
-safe_mkdir(os.path.join(fixed_vars['root_directory'], 'gru-' + fixed_vars['model_number']))
+safe_mkdir(fixed_vars['gru_directory'])
+safe_mkdir(fixed_vars['ffn_directory'])
 
 
 # attempt 0

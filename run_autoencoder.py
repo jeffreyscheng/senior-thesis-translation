@@ -16,7 +16,7 @@ if gru_hyperparameters['retrain']:
     loss_df = pd.read_csv(os.path.join(fixed_vars['root_directory'], "gru-" + str(fixed_vars['model_number']), "loss.csv"))
 else:
     gru_decoder = GRUDecoder(fixed_vars['word_embedding_dim'],
-                             translation_objects['trg_field'].vocab,
+                             translation_objects['test_trg_field'].vocab,
                              fixed_vars['bert_embedding_dim'],
                              gru_hyperparameters['gru_layers'],
                              gru_hyperparameters['gru_dropout'])
