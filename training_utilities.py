@@ -15,6 +15,7 @@ def train(model, translation_objects, optimizer, criterion, clip, loss_df, num_e
             if model.decoder.number_of_batches_seen > total_num_batches:
                 break;
             src = batch.src
+            featurized_trg = batch
             trg = batch.trg
             #         print("got the right features: ", src.size(), trg.size())
 

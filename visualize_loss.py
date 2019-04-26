@@ -8,7 +8,7 @@ loss_df = pd.read_csv(os.path.join(fixed_vars['root_directory'], "gru-" + fixed_
 loss_df['rolling_loss'] = loss_df['loss'].rolling(window=1000).mean()
 # gca stands for 'get current axis'
 ax = plt.gca()
-loss_df.loc[100000:140000,].plot(kind='line', x='batch_num', y='rolling_loss', ax=ax)
+loss_df.loc[200000:, ].plot(kind='line', x='batch_num', y='rolling_loss', ax=ax)
 plt.show()
 
 gru_decoder = torch.load(os.path.join(fixed_vars['root_directory'],
@@ -18,6 +18,7 @@ gru_decoder = torch.load(os.path.join(fixed_vars['root_directory'],
 translation_objects = get_translation_objects('.en', '.en')
 # example_sentence = "Hey Chris, here's an example sentence that I'm hoping to recreate."
 example_sentence = "Hello, world!"
+# example_sentence = "Horrible"
 
 
 def test_reconstruction(decoder, utterance):
@@ -31,7 +32,8 @@ def test_reconstruction(decoder, utterance):
     trg = translation_objects['trg_field'].process([t.preprocess(utterance)])
     output = autoencoder(src, trg, 1)
     _, best_guess = torch.max(output, dim=2)
-    return translation_objects['trg_field'].reverse(best_guess.permute(1, 0))
+    print('Predicted: ', translation_objects['trg_field'].reverse(best_guess.permute(1, 0)))
+    print('Actual: ', translation_objects['trg_field'].reverse(trg))
 
 
-print(test_reconstruction(gru_decoder, example_sentence))
+test_reconstruction(gru_decoder, example_sentence)

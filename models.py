@@ -10,7 +10,6 @@ class GRUDecoder(nn.Module):
         self.emb_dim = emb_dim  # should be 1 if we don't embed
         self.vocab_size = len(vocab)
         self.embed = nn.Embedding(self.vocab_size, self.emb_dim)  # we used GLove 100-dim
-        self.embed.weight.data.copy_(vocab.vectors)
         self.hid_dim = hid_dim
         self.dropout = dropout
         self.n_layers = n_layers  # should be 1

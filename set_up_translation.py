@@ -2,6 +2,7 @@ from global_variables import *
 from pytorch_pretrained_bert import BertTokenizer, BertModel
 from torchtext.datasets import TranslationDataset, Multi30k
 import torchtext.data as data
+from writer import Writer
 
 
 def get_translation_objects(input_lang, output_lang):
@@ -22,26 +23,32 @@ def get_translation_objects(input_lang, output_lang):
             return x
 
     def postprocess_replace_pad(batch, y):
+        print('got here')
         return [[replace_tokens(token) for token in sentence_list] for sentence_list in batch]
 
-    # originally had <sos> and <eos>
-    src_field = data.Field(tokenize=multilingual_bert_tokenizer.tokenize,
-                           init_token='<sos>',
-                           eos_token='<eos>',
-                           preprocessing=multilingual_bert_tokenizer.convert_tokens_to_ids,
-                           postprocessing=postprocess_replace_pad,
-                           use_vocab=False)  # use_vocab is false because we want Bert.
+    def get_english_field():
+        return data.Field(tokenize=english_bert_tokenizer.tokenize,
+                          init_token='<sos>',
+                          eos_token='<eos>',
+                          preprocessing=english_bert_tokenizer.convert_tokens_to_ids,
+                          postprocessing=postprocess_replace_pad,
+                          use_vocab=False)  # use_vocab is false because we want Bert.
 
-    def postprocess_to_id_and_replace_pad(batch, y):
-        return [[replace_tokens(english_bert_tokenizer.convert_tokens_to_ids(token)) for token in sentence_list] for
-                sentence_list in batch]
-
-    trg_field = data.ReversibleField(init_token='<sos>',
-                                     eos_token='<eos>',
-                                     sequential=True)
-
-    # preprocessing=english_bert_tokenizer.convert_tokens_to_ids,
-    # postprocessing=postprocess_to_id_and_replace_pad)
+    def get_multilingual_field():
+        return data.Field(tokenize=english_bert_tokenizer.tokenize,
+                          init_token='<sos>',
+                          eos_token='<eos>',
+                          preprocessing=english_bert_tokenizer.convert_tokens_to_ids,
+                          postprocessing=postprocess_replace_pad,
+                          use_vocab=False)  # use_vocab is false because we want Bert.
+    if input_lang == '.en':
+        src_field = get_english_field()
+    else:
+        src_field = get_multilingual_field()
+    if output_lang == '.en':
+        trg_field = get_english_field()
+    else:
+        trg_field = get_multilingual_field()
 
     train_data, valid_data, test_data = Multi30k.splits(exts=(input_lang, output_lang),
                                                         fields=(src_field, trg_field))
@@ -49,20 +56,20 @@ def get_translation_objects(input_lang, output_lang):
     print(f"Number of training examples: {len(train_data.examples)}")
     print(f"Number of validation examples: {len(valid_data.examples)}")
     print(f"Number of testing examples: {len(test_data.examples)}")
+    # print("Size of target vocab: ", len(test_trg_field.vocab))
 
-    # print(train_data.examples[0])
-
-    trg_field.build_vocab(train_data, min_freq=2, vectors="glove.6B.100d")
-
-    #     print(f"Unique tokens in source (", input_lang, ") vocabulary: ", len(SRC.vocab))
-    # print(f"Unique tokens in target (", output_lang, ") vocabulary: ", len(trg_field.vocab))
+    print("Size of target vocab: ", len(english_bert_tokenizer.vocab))
 
     train_iterator, valid_iterator, test_iterator = data.BucketIterator.splits(
         (train_data, valid_data, test_data),
         batch_size=gru_hyperparameters['batch_size'],
         device=fixed_vars['device'])
 
-    return {'train_data': train_data, 'valid_data': valid_data, 'test_data': test_data,
-            'train_iterator': train_iterator, 'valid_iterator': valid_iterator, 'test_iterator': test_iterator,
-            'bert_tokenizer': multilingual_bert_tokenizer,
-            'bert_encoder': bert_encoder, 'src_field': src_field, 'trg_field': trg_field}
+    translation_objects = {'train_data': train_data, 'valid_data': valid_data, 'test_data': test_data,
+                           'train_iterator': train_iterator, 'valid_iterator': valid_iterator,
+                           'test_iterator': test_iterator,
+                           'multilingual_bert_tokenizer': multilingual_bert_tokenizer,
+                           'english_bert_tokenizer': english_bert_tokenizer,
+                           'bert_encoder': bert_encoder, 'src_field': src_field,
+                           'trg_field': trg_field}
+    return translation_objects
