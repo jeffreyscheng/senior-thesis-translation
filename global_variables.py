@@ -12,7 +12,7 @@ fixed_vars = {'device': torch.device("cuda:0" if torch.cuda.is_available() else 
               'bert_embedding_dim': 768,
               'word_embedding_dim': 100,
               'gradient_clip': 1,
-              'gru_model_number': "4",
+              'gru_model_number': "5",
               'ffn_model_number': "0"}
 
 fixed_vars['gru_directory'] = os.path.join(fixed_vars['root_directory'], 'gru-' + fixed_vars['gru_model_number'])
@@ -40,9 +40,12 @@ safe_mkdir(fixed_vars['ffn_directory'])
 # same but with right tokenizer :(
 
 # attempt 4
+# 40, 1, 0.5, 0.0001, False, 500
+
+# attempt 5
 gru_hyperparameters = {'batch_size': 40,
                        'gru_layers': 1,
                        'gru_dropout': 0.5,
                        'learning_rate': 0.0001,
                        'retrain': False,
-                       'num_epochs': 500}
+                       'num_epochs': 250}
