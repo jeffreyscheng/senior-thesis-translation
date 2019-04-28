@@ -18,7 +18,7 @@ def test_reconstruction(decoder, utterance):
                               fixed_vars['device']).to(fixed_vars['device'])
     e = translation_objects['english_bert_tokenizer']
     s = translation_objects['src_field']
-    src = translation_objects['trg_field'].process([s.preprocess(e.tokenize(utterance))])
+    src = translation_objects['trg_field'].process([s.preprocess(e.tokenize(utterance))]).to(fixed_vars['device'])
     output = autoencoder(src, src, 1)
     _, best_guess = torch.max(output, dim=2)
     print('Predicted: ', e.convert_ids_to_tokens(best_guess.permute(1, 0)))
