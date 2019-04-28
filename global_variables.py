@@ -43,9 +43,12 @@ safe_mkdir(fixed_vars['ffn_directory'])
 # 40, 1, 0.5, 0.0001, False, 500
 
 # attempt 5
-gru_hyperparameters = {'batch_size': 40,
+# 40, 1, 0.5, 0.0001, False, 250
+
+# attempt 6
+gru_hyperparameters = {'batch_size': 25,
                        'gru_layers': 1,
                        'gru_dropout': 0.5,
-                       'learning_rate': 0.0001,
+                       'learning_rate': 0.00005,
                        'retrain': False,
-                       'num_epochs': 250}
+                       'num_epochs': 500}
