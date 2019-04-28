@@ -21,7 +21,7 @@ def test_reconstruction(decoder, utterance):
     src = translation_objects['trg_field'].process([s.preprocess(e.tokenize(utterance))]).to(fixed_vars['device'])
     output = autoencoder(src, src, 1)
     _, best_guess = torch.max(output, dim=2)
-    print('Predicted: ', e.convert_ids_to_tokens(best_guess.permute(1, 0)))
+    print('Predicted: ', e.convert_ids_to_tokens(best_guess.permute(1, 0).tolist()))
     print('Actual: ', src)
 
 
