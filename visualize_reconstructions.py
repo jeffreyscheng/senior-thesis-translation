@@ -2,7 +2,7 @@ from global_variables import *
 from models import Autoencoder
 from set_up_translation import get_translation_objects
 
-gru_decoder = torch.load(os.path.join(fixed_vars['root_directory'], "gru-5", "gru_decoder.model"), map_location='cpu')
+gru_decoder = torch.load(os.path.join(fixed_vars['root_directory'], "gru-4", "gru_decoder.model"), map_location='cpu')
 
 translation_objects = get_translation_objects('.en', '.en')
 # example_sentence = "Hey Chris, here's an example sentence that I'm hoping to recreate."
@@ -23,6 +23,7 @@ def test_reconstruction(decoder, utterance):
     _, best_guess = torch.max(output, dim=2)
     print(best_guess)
     print('Predicted: ', e.convert_ids_to_tokens(best_guess.permute(1, 0).flatten().tolist()))
+    print(src)
     print('Actual: ', e.convert_ids_to_tokens(src.flatten().tolist()))
 
 
