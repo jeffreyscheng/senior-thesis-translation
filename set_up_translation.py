@@ -7,17 +7,17 @@ import torchtext.data as data
 def get_translation_objects(input_lang, output_lang):
     multilingual_bert_tokenizer = BertTokenizer.from_pretrained('bert-base-multilingual-cased')
     english_bert_tokenizer = BertTokenizer.from_pretrained('bert-base-cased')
-    bert_encoder = BertModel.from_pretrained('bert-base-multilingual-cased')
+    bert_encoder = BertModel.from_pretrained('bert-base-cased')
     bert_encoder.to(fixed_vars['device'])
     bert_encoder.eval()
 
     def replace_tokens(x):
         if x == '<sos>':
-            return 28993
+            return 0
         elif x == '<pad>':
-            return 28994
+            return 0
         elif x == '<eos>':
-            return 28995
+            return 0
         else:
             return x
 
@@ -33,10 +33,10 @@ def get_translation_objects(input_lang, output_lang):
                           use_vocab=False)  # use_vocab is false because we want Bert.
 
     def get_multilingual_field():
-        return data.Field(tokenize=english_bert_tokenizer.tokenize,
+        return data.Field(tokenize=multilingual_bert_tokenizer.tokenize,
                           init_token='<sos>',
                           eos_token='<eos>',
-                          preprocessing=english_bert_tokenizer.convert_tokens_to_ids,
+                          preprocessing=multilingual_bert_tokenizer.convert_tokens_to_ids,
                           postprocessing=postprocess_replace_pad,
                           use_vocab=False)  # use_vocab is false because we want Bert.
     if input_lang == '.en':

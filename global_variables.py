@@ -1,3 +1,4 @@
+
 import torch
 import os
 
@@ -12,7 +13,7 @@ fixed_vars = {'device': torch.device("cuda:0" if torch.cuda.is_available() else 
               'bert_embedding_dim': 768,
               'word_embedding_dim': 100,
               'gradient_clip': 1,
-              'gru_model_number': "7",
+              'gru_model_number': "8",
               'ffn_model_number': "0"}
 
 fixed_vars['gru_directory'] = os.path.join(fixed_vars['root_directory'], 'gru-' + fixed_vars['gru_model_number'])
