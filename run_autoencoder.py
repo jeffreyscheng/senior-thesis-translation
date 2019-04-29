@@ -10,10 +10,9 @@ tick = time.time()
 translation_objects = get_translation_objects('.en', '.en')
 print("Initialized all training objects.")
 if gru_hyperparameters['retrain']:
-    gru_decoder = torch.load(os.path.join(fixed_vars['root_directory'],
-                                          "gru-" + str(fixed_vars['model_number']),
+    gru_decoder = torch.load(os.path.join(fixed_vars['gru_directory'],
                                           "gru_decoder.model"))
-    loss_df = pd.read_csv(os.path.join(fixed_vars['root_directory'], "gru-" + str(fixed_vars['model_number']), "loss.csv"))
+    loss_df = pd.read_csv(os.path.join(fixed_vars['gru_directory'], "loss.csv"))
 else:
     gru_decoder = GRUDecoder(fixed_vars['word_embedding_dim'],
                              translation_objects['english_bert_tokenizer'].vocab,

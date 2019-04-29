@@ -50,5 +50,5 @@ gru_hyperparameters = {'batch_size': 25,
                        'gru_layers': 1,
                        'gru_dropout': 0.5,
                        'learning_rate': 0.00005,
-                       'retrain': False,
+                       'retrain': True,
                        'num_epochs': 500}
