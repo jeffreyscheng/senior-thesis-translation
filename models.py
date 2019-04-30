@@ -33,13 +33,6 @@ class Autoencoder(nn.Module):
         self.device = device
         self.number_of_batches_seen = 0
 
-        # assert encoder.config.hidden_size == decoder.config.n_embd
-
-        # assert encoder.hid_dim == decoder.hid_dim, \
-        #     "Hidden dimensions of encoder and decoder must be equal!"
-        # assert encoder.n_layers == decoder.n_layers, \
-        #     "Encoder and decoder must have equal number of layers!"
-
     # only purpose is to train encoder and decoder; doesn't need one without a target
     def forward(self, src, trg, teacher_forcing_ratio=0.5):
 
@@ -59,6 +52,56 @@ class Autoencoder(nn.Module):
         hidden = hidden[-1]  # only grab last layer's output
         hidden = torch.mean(hidden, dim=1)  # get sentence embedding from mean of word embeddings
         hidden = hidden.unsqueeze(dim=0)
+
+        # first input to the decoder is the <sos> tokens
+        curr_token = trg[0, :]
+
+        for t in range(1, max_len):
+            curr_token = self.decoder.embed(curr_token)
+            curr_token = curr_token.unsqueeze(dim=0)
+            new_output, hidden = self.decoder(curr_token, hidden)
+            outputs[t] = new_output
+            teacher_force = random.random() < teacher_forcing_ratio
+            top1 = new_output.max(1)[1]
+            curr_token = (trg[t, :] if teacher_force else top1)
+
+        self.number_of_batches_seen += 1
+        return outputs
+
+
+class Translator(nn.Module):
+    def __init__(self, autoencoder, device):
+        super().__init__()
+
+        self.encoder = autoencoder.encoder
+        self.fc1 = nn.Linear(768, 768)
+        self.fc2 = nn.Linear(768, 768)
+        self.decoder = autoencoder.decoder
+        self.device = device
+        self.number_of_batches_seen = 0
+
+    # only purpose is to train encoder and decoder; doesn't need one without a target
+    def forward(self, src, trg, teacher_forcing_ratio=0.5):
+
+        batch_size = trg.shape[1]
+        if trg is None:
+            max_len = 100
+        else:
+            max_len = trg.shape[0]
+
+        outputs = torch.zeros(max_len, batch_size, self.decoder.vocab_size).to(self.device)
+
+        src = src.permute(1, 0)
+        german_thought = nn.ReLU(self.encoder(src))
+
+        english_thought = nn.ReLU(self.fc2(nn.ReLU(self.fc1(german_thought))))
+
+        #  https://github.com/huggingface/pytorch-pretrained-BERT#usage
+        english_thought = english_thought[0]  # ignore pooled output
+        english_thought = english_thought[-1]  # only grab last layer's output
+        english_thought = torch.mean(english_thought, dim=1)  # get sentence embedding from mean of word embeddings
+        english_thought = english_thought.unsqueeze(dim=0)
+        hidden = english_thought
 
         # first input to the decoder is the <sos> tokens
         curr_token = trg[0, :]
