@@ -30,3 +30,10 @@ autoencoder_hyperparameters = {'batch_size': 40,
                                'learning_rate': 0.0001,
                                'retrain': False,
                                'num_epochs': 200}
+
+# attempt 0
+translator_hyperparameters = {'batch_size': 40,
+                              'translator_dropout': 0.8,
+                              'learning_rate': 0.0001,
+                              'retrain': False,
+                              'num_epochs': 200}
