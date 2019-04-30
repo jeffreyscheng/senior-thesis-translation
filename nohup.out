@@ -1,0 +1,39 @@
+Traceback (most recent call last):
+  File "run_autoencoder.py", line 4, in <module>
+    from set_up_translation import get_translation_objects
+  File "/home/jeffch/senior-thesis-translation/set_up_translation.py", line 2, in <module>
+    from pytorch_pretrained_bert import BertTokenizer, BertModel
+  File "/home/jeffch/anaconda3/lib/python3.6/site-packages/pytorch_pretrained_bert/__init__.py", line 2, in <module>
+    from .tokenization import BertTokenizer, BasicTokenizer, WordpieceTokenizer
+  File "/home/jeffch/anaconda3/lib/python3.6/site-packages/pytorch_pretrained_bert/tokenization.py", line 25, in <module>
+    from .file_utils import cached_path
+  File "/home/jeffch/anaconda3/lib/python3.6/site-packages/pytorch_pretrained_bert/file_utils.py", line 18, in <module>
+    import boto3
+  File "/home/jeffch/anaconda3/lib/python3.6/site-packages/boto3/__init__.py", line 16, in <module>
+    from boto3.session import Session
+  File "/home/jeffch/anaconda3/lib/python3.6/site-packages/boto3/session.py", line 17, in <module>
+    import botocore.session
+  File "/home/jeffch/anaconda3/lib/python3.6/site-packages/botocore/session.py", line 30, in <module>
+    import botocore.credentials
+  File "/home/jeffch/anaconda3/lib/python3.6/site-packages/botocore/credentials.py", line 42, in <module>
+    from botocore.utils import InstanceMetadataFetcher, parse_key_val_file
+  File "/home/jeffch/anaconda3/lib/python3.6/site-packages/botocore/utils.py", line 31, in <module>
+    import botocore.httpsession
+  File "/home/jeffch/anaconda3/lib/python3.6/site-packages/botocore/httpsession.py", line 16, in <module>
+    from urllib3.contrib.pyopenssl import orig_util_SSLContext as SSLContext
+  File "/home/jeffch/anaconda3/lib/python3.6/site-packages/urllib3/contrib/pyopenssl.py", line 46, in <module>
+    import OpenSSL.SSL
+  File "/home/jeffch/anaconda3/lib/python3.6/site-packages/OpenSSL/__init__.py", line 8, in <module>
+    from OpenSSL import crypto, SSL
+  File "/home/jeffch/anaconda3/lib/python3.6/site-packages/OpenSSL/crypto.py", line 12, in <module>
+    from cryptography import x509
+  File "/home/jeffch/anaconda3/lib/python3.6/site-packages/cryptography/x509/__init__.py", line 8, in <module>
+    from cryptography.x509.base import (
+  File "/home/jeffch/anaconda3/lib/python3.6/site-packages/cryptography/x509/base.py", line 16, in <module>
+    from cryptography.x509.extensions import Extension, ExtensionType
+  File "/home/jeffch/anaconda3/lib/python3.6/site-packages/cryptography/x509/extensions.py", line 18, in <module>
+    from cryptography.hazmat.primitives import constant_time, serialization
+  File "/home/jeffch/anaconda3/lib/python3.6/site-packages/cryptography/hazmat/primitives/constant_time.py", line 9, in <module>
+    from cryptography.hazmat.bindings._constant_time import lib
+  File "<frozen importlib._bootstrap>", line 966, in _find_and_load
+KeyboardInterrupt
