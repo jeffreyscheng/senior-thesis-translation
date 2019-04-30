@@ -10,8 +10,8 @@ autoencoder_objects = get_autoencoder_objects()
 # example_sentence = "This is an image of a bird, which is an animal that I quite like."
 # example_sentence = "Horrible"
 
-example_sentence = "A brown dog is drinking water out of a bowl."
-
+# example_sentence = "A brown dog is drinking water out of a bowl."
+example_sentence = "Hey Chris, I think that this work is pretty good."
 
 def test_reconstruction(utterance):
     e = autoencoder_objects['english_bert_tokenizer']
