@@ -1,12 +1,11 @@
-from global_variables import *
 from models import Autoencoder
-from set_up_translation import get_translation_objects
+from set_up_translation import *
 import torch.nn as nn
 
-gru_decoder = torch.load(os.path.join(fixed_vars['root_directory'], "gru-8", "gru_decoder.model"),
+autoencoder = torch.load(os.path.join(fixed_vars['autoencoder_directory'], "autoencoder.model"),
                          map_location=fixed_vars['device'])
 
-translation_objects = get_translation_objects('.en', '.en')
+autoencoder_objects = get_autoencoder_objects()
 # example_sentence = "Hey Chris, here's an example sentence that I'm hoping to recreate."
 # example_sentence = "This is an image of a bird, which is an animal that I quite like."
 # example_sentence = "Horrible"
@@ -14,13 +13,10 @@ translation_objects = get_translation_objects('.en', '.en')
 example_sentence = "A brown dog is drinking water out of a bowl."
 
 
-def test_reconstruction(decoder, utterance):
-    autoencoder = Autoencoder(translation_objects['bert_encoder'],
-                              decoder,
-                              fixed_vars['device']).to(fixed_vars['device'])
-    e = translation_objects['english_bert_tokenizer']
-    s = translation_objects['src_field']
-    src = translation_objects['trg_field'].process([s.preprocess(e.tokenize(utterance))]).to(fixed_vars['device'])
+def test_reconstruction(utterance):
+    e = autoencoder_objects['english_bert_tokenizer']
+    s = autoencoder_objects['src_field']
+    src = autoencoder_objects['trg_field'].process([s.preprocess(e.tokenize(utterance))]).to(fixed_vars['device'])
     output = autoencoder(src, src, 1)
     _, best_guess = torch.max(output, dim=2)
     print(best_guess)
@@ -46,4 +42,4 @@ def test_reconstruction(decoder, utterance):
     print(criterion(eval_output, trg))
 
 
-test_reconstruction(gru_decoder, example_sentence)
+test_reconstruction(example_sentence)

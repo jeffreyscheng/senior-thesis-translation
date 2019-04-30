@@ -12,7 +12,7 @@ fixed_vars = {'device': torch.device("cuda:0" if torch.cuda.is_available() else 
               'bert_embedding_dim': 768,
               'word_embedding_dim': 100,
               'gradient_clip': 1,
-              'autoencoder_model_number': "8",
+              'autoencoder_model_number': "0",
               'translator_model_number': "0"}
 
 fixed_vars['autoencoder_directory'] = os.path.join(fixed_vars['root_directory'],
