@@ -4,13 +4,13 @@ import time
 from global_variables import *
 
 
-def train_autoencoder(model, translation_objects, optimizer, criterion, clip, loss_df, num_epochs):
+def train_autoencoder(model, autoencoder_objects, optimizer, criterion, clip, loss_df, num_epochs):
     loss_list = []
-    total_num_batches = len(translation_objects['train_data']) * num_epochs / autoencoder_hyperparameters['batch_size']
+    total_num_batches = len(autoencoder_objects['train_data']) * num_epochs / autoencoder_hyperparameters['batch_size']
     while True:
         if model.number_of_batches_seen > total_num_batches:
             break
-        for i, batch in enumerate(translation_objects['train_iterator']):
+        for i, batch in enumerate(autoencoder_objects['train_iterator']):
             tick = time.time()
             if model.number_of_batches_seen > total_num_batches:
                 break

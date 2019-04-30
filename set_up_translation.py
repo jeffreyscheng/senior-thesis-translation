@@ -5,7 +5,7 @@ import torchtext.data as data
 
 
 def replace_tokens(x):
-    if x in ['[PAD]', '[PAD]']:
+    if x in ['[PAD]', '<pad>']:
         return 0
     else:
         return x
