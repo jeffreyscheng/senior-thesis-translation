@@ -3,7 +3,8 @@ from models import Autoencoder
 from set_up_translation import get_translation_objects
 import torch.nn as nn
 
-gru_decoder = torch.load(os.path.join(fixed_vars['root_directory'], "gru-8", "gru_decoder.model"), map_location='cpu')
+gru_decoder = torch.load(os.path.join(fixed_vars['root_directory'], "gru-8", "gru_decoder.model"),
+                         map_location=fixed_vars['device'])
 
 translation_objects = get_translation_objects('.en', '.en')
 # example_sentence = "Hey Chris, here's an example sentence that I'm hoping to recreate."

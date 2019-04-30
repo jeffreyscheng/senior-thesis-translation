@@ -16,7 +16,6 @@ class GRUDecoder(nn.Module):
         self.rnn = nn.GRU(emb_dim, hid_dim, n_layers, dropout=dropout)
         self.out = nn.Linear(self.hid_dim, self.vocab_size)
         self.dropout = nn.Dropout(dropout)
-        self.number_of_batches_seen = 0
 
     def forward(self, last_word, last_hidden):
         output, new_hidden = self.rnn(last_word.float(), last_hidden.float())
@@ -32,6 +31,7 @@ class Autoencoder(nn.Module):
         # self.shrink = shrink_net
         self.decoder = decoder
         self.device = device
+        self.number_of_batches_seen = 0
 
         # assert encoder.config.hidden_size == decoder.config.n_embd
 
@@ -72,7 +72,7 @@ class Autoencoder(nn.Module):
             top1 = new_output.max(1)[1]
             curr_token = (trg[t, :] if teacher_force else top1)
 
-        self.decoder.number_of_batches_seen += 1
+        self.number_of_batches_seen += 1
         return outputs
 
 

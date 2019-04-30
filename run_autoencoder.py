@@ -1,32 +1,42 @@
 from global_variables import *
 from models import *
 import torch.optim as optim
-from set_up_translation import get_translation_objects
-from training_utilities import train
+from set_up_translation import get_autoencoder_objects
+from pytorch_pretrained_bert import BertModel
+from training_utilities import train_autoencoder
 import pandas as pd
 import time
 
 tick = time.time()
-translation_objects = get_translation_objects('.en', '.en')
+autoencoder_objects = get_autoencoder_objects()
 print("Initialized all training objects.")
-if gru_hyperparameters['retrain']:
-    gru_decoder = torch.load(os.path.join(fixed_vars['gru_directory'],
-                                          "gru_decoder.model"))
-    loss_df = pd.read_csv(os.path.join(fixed_vars['gru_directory'], "loss.csv"))
+if autoencoder_hyperparameters['retrain']:
+    autoencoder = torch.load(os.path.join(fixed_vars['autoencoder_directory'], "autoencoder.model"))
+    loss_df = pd.read_csv(os.path.join(fixed_vars['autoencoder_directory'], "loss.csv"))
 else:
+    bert_encoder = BertModel.from_pretrained('bert-base-cased')
+    bert_encoder.to(fixed_vars['device'])
+    bert_encoder.train()
     gru_decoder = GRUDecoder(fixed_vars['word_embedding_dim'],
-                             translation_objects['english_bert_tokenizer'].vocab,
+                             autoencoder_objects['english_bert_tokenizer'].vocab,
                              fixed_vars['bert_embedding_dim'],
-                             gru_hyperparameters['gru_layers'],
-                             gru_hyperparameters['gru_dropout'])
+                             autoencoder_hyperparameters['gru_layers'],
+                             autoencoder_hyperparameters['gru_dropout'])
     loss_df = pd.DataFrame(columns=['batch_num', 'loss'])
-autoencoder = Autoencoder(translation_objects['bert_encoder'],
-                          gru_decoder,
-                          fixed_vars['device']).to(fixed_vars['device'])
-autoencoder_optimizer = optim.Adam(autoencoder.parameters(), lr=gru_hyperparameters['learning_rate'])
+    print("created new encoder + decoder")
+    autoencoder = Autoencoder(bert_encoder,
+                              gru_decoder,
+                              fixed_vars['device']).to(fixed_vars['device'])
+autoencoder_optimizer = optim.Adam(autoencoder.parameters(), lr=autoencoder_hyperparameters['learning_rate'])
 PAD_IDX = 0
 criterion = nn.CrossEntropyLoss(ignore_index=PAD_IDX)
 print("Initialized all torch objects and models.  Now training.")
 
-train(autoencoder, translation_objects, autoencoder_optimizer, criterion, fixed_vars['gradient_clip'], loss_df, gru_hyperparameters['num_epochs'])
+train_autoencoder(autoencoder,
+                  autoencoder_objects,
+                  autoencoder_optimizer,
+                  criterion,
+                  fixed_vars['gradient_clip'],
+                  loss_df,
+                  autoencoder_hyperparameters['num_epochs'])
 print(time.time() - tick)

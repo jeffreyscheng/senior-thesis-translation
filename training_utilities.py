@@ -4,16 +4,16 @@ import time
 from global_variables import *
 
 
-def train(model, translation_objects, optimizer, criterion, clip, loss_df, num_epochs):
+def train_autoencoder(model, translation_objects, optimizer, criterion, clip, loss_df, num_epochs):
     loss_list = []
-    total_num_batches = len(translation_objects['train_data']) * num_epochs / gru_hyperparameters['batch_size']
+    total_num_batches = len(translation_objects['train_data']) * num_epochs / autoencoder_hyperparameters['batch_size']
     while True:
-        if model.decoder.number_of_batches_seen > total_num_batches:
-            break;
+        if model.number_of_batches_seen > total_num_batches:
+            break
         for i, batch in enumerate(translation_objects['train_iterator']):
             tick = time.time()
-            if model.decoder.number_of_batches_seen > total_num_batches:
-                break;
+            if model.number_of_batches_seen > total_num_batches:
+                break
             src = batch.src
             trg = batch.trg
             optimizer.zero_grad()
@@ -29,12 +29,12 @@ def train(model, translation_objects, optimizer, criterion, clip, loss_df, num_e
 
             print(time.time() - tick)
 
-            if model.decoder.number_of_batches_seen % 2000 == 0:
+            if model.number_of_batches_seen % 2000 == 0:
                 # save gru_decoder
-                torch.save(model.decoder, os.path.join(fixed_vars['gru_directory'], "gru_decoder.model"))
+                torch.save(model, os.path.join(fixed_vars['autoencoder_directory'], "autoencoder.model"))
                 # save losses
-            if model.decoder.number_of_batches_seen % 100 == 0:
+            if model.number_of_batches_seen % 100 == 0:
                 loss_df = loss_df.append(pd.DataFrame(loss_list), ignore_index=True)
-                loss_df.to_csv(os.path.join(fixed_vars['gru_directory'], "loss.csv"))
+                loss_df.to_csv(os.path.join(fixed_vars['autoencoder_directory'], "loss.csv"))
                 loss_list = []
     return model, loss_df

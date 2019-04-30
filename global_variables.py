@@ -1,4 +1,3 @@
-
 import torch
 import os
 
@@ -13,46 +12,21 @@ fixed_vars = {'device': torch.device("cuda:0" if torch.cuda.is_available() else 
               'bert_embedding_dim': 768,
               'word_embedding_dim': 100,
               'gradient_clip': 1,
-              'gru_model_number': "8",
-              'ffn_model_number': "0"}
+              'autoencoder_model_number': "8",
+              'translator_model_number': "0"}
 
-fixed_vars['gru_directory'] = os.path.join(fixed_vars['root_directory'], 'gru-' + fixed_vars['gru_model_number'])
-fixed_vars['ffn_directory'] = os.path.join(fixed_vars['root_directory'], 'ffn-' + fixed_vars['ffn_model_number'])
+fixed_vars['autoencoder_directory'] = os.path.join(fixed_vars['root_directory'],
+                                                   'autoencoder-' + fixed_vars['autoencoder_model_number'])
+fixed_vars['translator_directory'] = os.path.join(fixed_vars['root_directory'],
+                                                  'translator-' + fixed_vars['translator_model_number'])
 
-safe_mkdir(fixed_vars['gru_directory'])
-safe_mkdir(fixed_vars['ffn_directory'])
-
+safe_mkdir(fixed_vars['autoencoder_directory'])
+safe_mkdir(fixed_vars['translator_directory'])
 
 # attempt 0
-# gru_hyperparameters = {'batch_size': 20,
-#                        'gru_layers': 1,
-#                        'gru_dropout': 0.2,
-#                        'learning_rate': 0.001,
-#                        'retrain': True,
-#                        'num_epochs': 200}
-
-# attempt 1
-# 40, 1, 0.5, 0.0001, False, 500
-
-# attempt 2
-# 40, 1, 0.5, 0.0003, False, 500
-
-# attempt 3
-# same but with right tokenizer :(
-
-# attempt 4
-# 40, 1, 0.5, 0.0001, False, 500
-
-# attempt 5
-# 40, 1, 0.5, 0.0001, False, 250
-
-# attempt 6
-# 25, 1, 0.8, 0.00001, False, 500
-
-# attempt 7
-gru_hyperparameters = {'batch_size': 40,
-                       'gru_layers': 1,
-                       'gru_dropout': 0.8,
-                       'learning_rate': 0.0001,
-                       'retrain': True,
-                       'num_epochs': 200}
+autoencoder_hyperparameters = {'batch_size': 40,
+                               'gru_layers': 1,
+                               'gru_dropout': 0.8,
+                               'learning_rate': 0.0001,
+                               'retrain': False,
+                               'num_epochs': 200}
