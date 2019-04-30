@@ -49,7 +49,7 @@ translation_objects = get_translation_objects('.en', '.en')
 print("Initialized all training objects.")
 if gru_hyperparameters['retrain']:
     gru_decoder = torch.load(os.path.join(fixed_vars['gru_directory'],
-                                          "gru_decoder.model"), map_location='cpu')
+                                          "gru_decoder.model"))
     loss_df = pd.read_csv(os.path.join(fixed_vars['gru_directory'], "loss.csv"))
 else:
     gru_decoder = GRUDecoder(fixed_vars['word_embedding_dim'],
@@ -59,8 +59,8 @@ else:
                              gru_hyperparameters['gru_dropout'])
     loss_df = pd.DataFrame(columns=['batch_num', 'loss'])
 autoencoder = Autoencoder(translation_objects['bert_encoder'],
-                          gru_decoder.to('cpu'),
-                          fixed_vars['device']).to('cpu')
+                          gru_decoder,
+                          fixed_vars['device'])
 autoencoder_optimizer = optim.Adam(autoencoder.parameters(), lr=gru_hyperparameters['learning_rate'])
 PAD_IDX = 0
 criterion = nn.CrossEntropyLoss(ignore_index=PAD_IDX)
