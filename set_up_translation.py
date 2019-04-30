@@ -12,11 +12,7 @@ def get_translation_objects(input_lang, output_lang):
     bert_encoder.eval()
 
     def replace_tokens(x):
-        if x == '<sos>':
-            return 0
-        elif x == '<pad>':
-            return 0
-        elif x == '<eos>':
+        if x in ['[PAD]', '<pad>']:
             return 0
         else:
             return x
@@ -26,8 +22,8 @@ def get_translation_objects(input_lang, output_lang):
 
     def get_english_field():
         return data.Field(tokenize=english_bert_tokenizer.tokenize,
-                          init_token='<sos>',
-                          eos_token='<eos>',
+                          init_token='<pad>',
+                          eos_token='<pad>',
                           preprocessing=english_bert_tokenizer.convert_tokens_to_ids,
                           postprocessing=postprocess_replace_pad,
                           use_vocab=False)  # use_vocab is false because we want Bert.
