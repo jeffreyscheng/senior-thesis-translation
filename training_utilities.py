@@ -25,7 +25,7 @@ def train_autoencoder(model, autoencoder_objects, optimizer, criterion, clip, lo
             torch.nn.utils.clip_grad_norm_(model.parameters(), clip)
             optimizer.step()
 
-            loss_list.append({'batch_num': model.decoder.number_of_batches_seen, 'loss': float(loss.data)})
+            loss_list.append({'batch_num': model.number_of_batches_seen, 'loss': float(loss.data)})
 
             print(time.time() - tick)
 
