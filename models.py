@@ -90,15 +90,15 @@ class Translator(nn.Module):
         outputs = torch.zeros(max_len, batch_size, self.decoder.vocab_size).to(self.device)
 
         src = src.permute(1, 0)
-        german_thought = nn.ReLU(self.encoder(src))
-
-        english_thought = nn.ReLU(self.fc2(nn.ReLU(self.fc1(german_thought))))
+        german_thought = self.encoder(src)
 
         #  https://github.com/huggingface/pytorch-pretrained-BERT#usage
-        english_thought = english_thought[0]  # ignore pooled output
-        english_thought = english_thought[-1]  # only grab last layer's output
-        english_thought = torch.mean(english_thought, dim=1)  # get sentence embedding from mean of word embeddings
-        english_thought = english_thought.unsqueeze(dim=0)
+        german_thought = german_thought[0]  # ignore pooled output
+        german_thought = german_thought[-1]  # only grab last layer's output
+        german_thought = torch.mean(german_thought, dim=1)  # get sentence embedding from mean of word embeddings
+        german_thought = german_thought.unsqueeze(dim=0)
+
+        english_thought = nn.ReLU(self.fc2(nn.ReLU(self.fc1(german_thought))))
         hidden = english_thought
 
         # first input to the decoder is the <sos> tokens
