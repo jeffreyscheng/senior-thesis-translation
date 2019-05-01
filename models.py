@@ -99,7 +99,7 @@ class Translator(nn.Module):
         german_thought = torch.mean(german_thought, dim=1)  # get sentence embedding from mean of word embeddings
         print("After mean pool", german_thought.size())
 
-        english_thought = nn.ReLU(self.fc2(nn.ReLU(self.fc1(german_thought))))
+        english_thought = nn.ReLU(self.fc2(nn.ReLU(self.fc1(german_thought), dim=1)), dim=1)
 
         print("After FFN", english_thought.size())
 
