@@ -96,18 +96,12 @@ class Translator(nn.Module):
         #  https://github.com/huggingface/pytorch-pretrained-BERT#usage
         german_thought = german_thought[0]  # ignore pooled output
         german_thought = german_thought[-1]  # only grab last layer's output
-        print("After grabbing last layer", german_thought.size())
         german_thought = torch.mean(german_thought, dim=1)  # get sentence embedding from mean of word embeddings
-        print("After mean pool", german_thought.size())
 
         german_thought = self.fc1(german_thought)
-        print("After fc1", german_thought.size())
         german_thought = self.relu(german_thought)
-        print("After ReLU", german_thought.size())
         german_thought = self.fc2(german_thought)
-        print("After fc2", german_thought.size())
         english_thought = self.relu(german_thought)
-        print("After FFN", english_thought.size())
 
         english_thought = english_thought.unsqueeze(dim=0)
         hidden = english_thought
