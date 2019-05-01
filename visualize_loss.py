@@ -2,8 +2,8 @@ import pandas as pd
 from global_variables import *
 import matplotlib.pyplot as plt
 
-path = os.path.join(fixed_vars['autoencoder_directory'], "loss.csv")
-# path = os.path.join(fixed_vars['translator_directory'], "loss.csv")
+# path = os.path.join(fixed_vars['autoencoder_directory'], "loss.csv")
+path = os.path.join(fixed_vars['translator_directory'], "loss.csv")
 
 
 def viz_loss(path):

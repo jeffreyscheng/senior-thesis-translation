@@ -18,7 +18,7 @@ with torch.no_grad():
         tick = time.time()
         src = batch.src.to(device)
         trg = batch.trg.to(device)
-        output = translator(src, trg)
+        output = translator(src, trg, 1)
         output = output[1:]
         _, best_guess = torch.max(output, dim=2)
         trg = trg[1:]
