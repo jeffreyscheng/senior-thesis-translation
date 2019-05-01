@@ -12,7 +12,11 @@ def replace_tokens(x):
 
 
 def postprocess_replace_pad(batch, y):
-    return [[replace_tokens(token) for token in sentence_list] for sentence_list in batch]
+    def truncate_sentence(sent):
+        if len(sent) > 100:
+            return sent[:100]
+        return sent
+    return [[replace_tokens(token) for token in truncate_sentence(sentence_list)] for sentence_list in batch]
 
 
 def get_autoencoder_objects():

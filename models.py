@@ -11,11 +11,9 @@ class GRUDecoder(nn.Module):
         self.vocab_size = len(vocab)
         self.embed = nn.Embedding(self.vocab_size, self.emb_dim)  # we used GLove 100-dim
         self.hid_dim = hid_dim
-        self.dropout = dropout
         self.n_layers = n_layers  # should be 1
         self.rnn = nn.GRU(emb_dim, hid_dim, n_layers, dropout=dropout)
         self.out = nn.Linear(self.hid_dim, self.vocab_size)
-        self.dropout = nn.Dropout(dropout)
 
     def forward(self, last_word, last_hidden):
         output, new_hidden = self.rnn(last_word.float(), last_hidden.float())
