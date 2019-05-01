@@ -99,14 +99,17 @@ class Translator(nn.Module):
         german_thought = torch.mean(german_thought, dim=1)  # get sentence embedding from mean of word embeddings
         print("After mean pool", german_thought.size())
 
-        english_thought = nn.ReLU(self.fc2(nn.ReLU(self.fc1(german_thought), dim=1)), dim=1)
-
+        german_thought = self.fc1(german_thought)
+        print("After fc1", german_thought.size())
+        german_thought = nn.ReLU(german_thought)
+        print("After ReLU", german_thought.size())
+        german_thought = self.fc2(german_thought)
+        print("After fc2", german_thought.size())
+        english_thought = nn.ReLU(german_thought)
         print("After FFN", english_thought.size())
 
         english_thought = english_thought.unsqueeze(dim=0)
         hidden = english_thought
-
-
 
         # first input to the decoder is the <sos> tokens
         curr_token = trg[0, :]
