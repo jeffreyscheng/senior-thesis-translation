@@ -98,6 +98,7 @@ class Translator(nn.Module):
         german_thought = torch.mean(german_thought, dim=1)  # get sentence embedding from mean of word embeddings
         german_thought = german_thought.unsqueeze(dim=0)
 
+        print(german_thought.size())
         english_thought = nn.ReLU(self.fc2(nn.ReLU(self.fc1(german_thought))))
         hidden = english_thought
 
