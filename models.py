@@ -68,13 +68,13 @@ class Autoencoder(nn.Module):
 
 
 class Translator(nn.Module):
-    def __init__(self, autoencoder, device):
+    def __init__(self, encoder, decoder, device):
         super().__init__()
 
-        self.encoder = autoencoder.encoder
+        self.encoder = encoder
         self.fc1 = nn.Linear(768, 768)
         self.fc2 = nn.Linear(768, 768)
-        self.decoder = autoencoder.decoder
+        self.decoder = decoder
         self.device = device
         self.number_of_batches_seen = 0
 

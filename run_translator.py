@@ -2,6 +2,7 @@ from global_variables import *
 from models import *
 import torch.optim as optim
 from set_up_translation import get_translation_objects
+from pytorch_pretrained_bert import BertModel
 from training_utilities import train_translator
 import pandas as pd
 import time
@@ -13,10 +14,13 @@ if translator_hyperparameters['retrain']:
     translator = torch.load(os.path.join(fixed_vars['translator_directory'], "translator.model"))
     loss_df = pd.read_csv(os.path.join(fixed_vars['translator_directory'], "loss.csv"))
 else:
+    bert_encoder = BertModel.from_pretrained('bert-base-multilingual-cased')
+    bert_encoder.to(fixed_vars['device'])
+    bert_encoder.train()
     autoencoder = torch.load(os.path.join(fixed_vars['autoencoder_directory'], "autoencoder.model"))
     loss_df = pd.DataFrame(columns=['batch_num', 'loss'])
     print("created new encoder + decoder")
-    translator = Translator(autoencoder, fixed_vars['device']).to(fixed_vars['device'])
+    translator = Translator(bert_encoder, autoencoder.decoder, fixed_vars['device']).to(fixed_vars['device'])
 translator_optimizer = optim.Adam(translator.parameters(), lr=translator_hyperparameters['learning_rate'])
 PAD_IDX = 0
 criterion = nn.CrossEntropyLoss(ignore_index=PAD_IDX)
