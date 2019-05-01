@@ -102,11 +102,11 @@ class Translator(nn.Module):
 
         german_thought = self.fc1(german_thought)
         print("After fc1", german_thought.size())
-        german_thought = self.ReLU(german_thought)
+        german_thought = self.relu(german_thought)
         print("After ReLU", german_thought.size())
         german_thought = self.fc2(german_thought)
         print("After fc2", german_thought.size())
-        english_thought = self.ReLU(german_thought)
+        english_thought = self.relu(german_thought)
         print("After FFN", english_thought.size())
 
         english_thought = english_thought.unsqueeze(dim=0)
