@@ -60,7 +60,7 @@ def train_autoencoder(model, autoencoder_objects, optimizer, criterion, clip, lo
                 # save losses
             if model.number_of_batches_seen % 100 == 0:
                 loss_df = loss_df.append(pd.DataFrame(loss_list), ignore_index=True)
-                loss_df.to_csv(fixed_vars['autoencoder_directory'], "loss.csv")
+                loss_df.to_csv(fixed_vars['autoencoder_directory'] + "/loss.csv")
                 loss_list = []
     return model, loss_df
 
