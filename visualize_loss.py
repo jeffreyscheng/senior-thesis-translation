@@ -13,7 +13,7 @@ def viz_loss(path):
     # gca stands for 'get current axis'
     plt.clf()
     ax = plt.gca()
-    plt.title('English Sentence Autoencoder Learning Curve', fontsize=16)
+    plt.title('BALM Translator Learning Curve', fontsize=16)
 
     loss_df.plot(kind='line', x='epoch', y='rolling_loss', ax=ax)
 

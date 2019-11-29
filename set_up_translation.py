@@ -1,5 +1,5 @@
 from global_variables import *
-from pytorch_pretrained_bert import BertTokenizer
+from transformers import BertTokenizer
 from torchtext.datasets import TranslationDataset, Multi30k
 import torchtext.data as data
 

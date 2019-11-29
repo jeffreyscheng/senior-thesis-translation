@@ -3,5 +3,6 @@
 /.vector_cache
 *.pyc
 /__pycache__
+/venv
 *.model
 *.txt

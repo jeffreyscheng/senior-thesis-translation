@@ -45,9 +45,8 @@ class Autoencoder(nn.Module):
         src = src.permute(1, 0)
         hidden = self.encoder(src)
 
-        #  https://github.com/huggingface/pytorch-pretrained-BERT#usage
+        #  https://huggingface.co/transformers/model_doc/bert.html
         hidden = hidden[0]  # ignore pooled output
-        hidden = hidden[-1]  # only grab last layer's output
         hidden = torch.mean(hidden, dim=1)  # get sentence embedding from mean of word embeddings
         hidden = hidden.unsqueeze(dim=0)
 

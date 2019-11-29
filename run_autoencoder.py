@@ -2,7 +2,7 @@ from global_variables import *
 from models import *
 import torch.optim as optim
 from set_up_translation import get_autoencoder_objects
-from pytorch_pretrained_bert import BertModel
+from transformers import BertModel
 from training_utilities import train_autoencoder
 import pandas as pd
 import time
