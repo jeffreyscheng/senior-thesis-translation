@@ -105,6 +105,6 @@ def train_translator(model, translation_objects, optimizer, criterion, clip, los
                 # save losses
             if model.number_of_batches_seen % 100 == 0:
                 loss_df = loss_df.append(pd.DataFrame(loss_list), ignore_index=True)
-                loss_df.to_csv(os.path.join(fixed_vars['translator_directory'], "loss.csv"))
+                loss_df.to_csv(os.path.join(fixed_vars['translator_directory'], str(theta) + "loss.csv"))
                 loss_list = []
     return model, loss_df

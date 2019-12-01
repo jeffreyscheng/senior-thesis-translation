@@ -41,3 +41,5 @@ for theta in range(21):
     loss_df_list.append(theta_loss_df)
     # print(time.time() - tick)
 loss_df = pd.concat(loss_df_list)
+loss_df.to_csv(os.path.join(fixed_vars['translator_directory'], 'full_translator_loss.csv'))
+
