@@ -36,7 +36,8 @@ for theta in range(21):
                                      translator_optimizer,
                                      criterion,
                                      fixed_vars['gradient_clip'],
-                                     translator_hyperparameters['num_epochs'])
+                                     translator_hyperparameters['num_epochs'],
+                                     proportion_of_data)
     theta_loss_df['proportion_of_data'] = proportion_of_data
     loss_df_list.append(theta_loss_df)
     # print(time.time() - tick)
