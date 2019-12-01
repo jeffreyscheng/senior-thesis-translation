@@ -70,32 +70,12 @@ def train_translator(model, translation_objects, optimizer, criterion, clip, los
     loss_df = pd.DataFrame(columns=['batch_num', 'loss'])
     loss_list = []
     total_num_batches = len(translation_objects['train_data']) * num_epochs / autoencoder_hyperparameters['batch_size']
-    reduced_training_data = iter_sample_fast(translation_objects['train_data'], int(theta * len(translation_objects['train_data'])))
-
-    class ReducedTranslationDataset(Dataset):
-        def __init__(self, reduced_data, transform=None):
-            self.data = reduced_data
-            self.sort_key = None
-
-        def __len__(self):
-            return len(self.data)
-
-        def __getitem__(self, idx):
-            return self.data[idx]
-
-    reduced_training_data = ReducedTranslationDataset(reduced_training_data)
-
-    train_iterator, valid_iterator, test_iterator = data.BucketIterator.splits(
-        (reduced_training_data,
-         translation_objects['valid_data'],
-         translation_objects['test_data']),
-        batch_size=autoencoder_hyperparameters['batch_size'],
-        device=fixed_vars['device'])
+    translation_objects['train_iterator'].dataset = translation_objects['train_iterator'].dataset[:int(theta * len(translation_objects['train_iterator']))]
 
     while True:
         if model.number_of_batches_seen > total_num_batches:
             break
-        for i, batch in enumerate(train_iterator):
+        for i, batch in enumerate(translation_objects['train_iterator']):
             tick = time.time()
             if model.number_of_batches_seen > total_num_batches:
                 break
