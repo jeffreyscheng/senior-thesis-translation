@@ -53,7 +53,7 @@ def train_autoencoder(model, autoencoder_objects, optimizer, criterion, clip, lo
 
             loss_list.append({'batch_num': model.number_of_batches_seen, 'loss': float(loss.data)})
 
-            print(time.time() - tick)
+            print('Time: ', time.time() - tick, ', loss: ', loss.data)
 
             if model.number_of_batches_seen % 2000 == 0:
                 # save gru_decoder
