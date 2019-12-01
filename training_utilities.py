@@ -72,10 +72,12 @@ def train_translator(model, translation_objects, optimizer, criterion, clip, los
     total_num_batches = len(translation_objects['train_data']) * num_epochs / autoencoder_hyperparameters['batch_size']
     # translation_objects['train_iterator'].dataset = translation_objects['train_iterator'].dataset[:int(theta * len(translation_objects['train_iterator']))]
 
+    t = translation_objects['train_iterator']
+    train_set = list(enumerate(t))[:int(theta * len(t))]
     while True:
         if model.number_of_batches_seen > total_num_batches:
             break
-        for i, batch in enumerate(translation_objects['train_iterator']):
+        for i, batch in train_set:
             tick = time.time()
             if model.number_of_batches_seen > total_num_batches:
                 break
