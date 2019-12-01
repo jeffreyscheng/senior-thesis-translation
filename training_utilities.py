@@ -94,7 +94,7 @@ def train_translator(model, translation_objects, optimizer, criterion, clip, los
 
             loss_list.append({'batch_num': model.number_of_batches_seen, 'loss': float(loss.data)})
 
-            print(time.time() - tick)
+            print('Time: ', time.time() - tick, ', loss: ', loss.data)
 
             if model.number_of_batches_seen % 2000 == 0:
                 # save gru_decoder

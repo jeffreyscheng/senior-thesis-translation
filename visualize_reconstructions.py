@@ -3,8 +3,8 @@ from set_up_translation import *
 import torch.nn as nn
 import os
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "2"
-device = torch.device("cuda:2" if torch.cuda.is_available() else "cpu")
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 autoencoder = torch.load(os.path.join(fixed_vars['autoencoder_directory'], "autoencoder.model"),
                          map_location=device)
 
