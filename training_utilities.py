@@ -96,7 +96,7 @@ def train_translator(model, translation_objects, optimizer, criterion, clip, los
 
             if model.number_of_batches_seen % 2000 == 0:
                 # save gru_decoder
-                torch.save(model, os.path.join(fixed_vars['translator_directory'], "translator.model"))
+                torch.save(model, os.path.join(fixed_vars['translator_directory'], str(theta) + "translator.model"))
                 # save losses
             if model.number_of_batches_seen % 100 == 0:
                 loss_df = loss_df.append(pd.DataFrame(loss_list), ignore_index=True)

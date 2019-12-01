@@ -31,16 +31,15 @@ for theta in range(21):
     criterion = nn.CrossEntropyLoss(ignore_index=PAD_IDX)
     print("Initialized all torch objects and models.  Now training.")
 
-    theta_loss_df = train_translator(translator,
-                                     translator_objects,
-                                     translator_optimizer,
-                                     criterion,
-                                     fixed_vars['gradient_clip'],
-                                     translator_hyperparameters['num_epochs'],
-                                     proportion_of_data)
+    model, theta_loss_df = train_translator(translator,
+                                            translator_objects,
+                                            translator_optimizer,
+                                            criterion,
+                                            fixed_vars['gradient_clip'],
+                                            translator_hyperparameters['num_epochs'],
+                                            proportion_of_data)
     theta_loss_df['proportion_of_data'] = proportion_of_data
     loss_df_list.append(theta_loss_df)
     # print(time.time() - tick)
 loss_df = pd.concat(loss_df_list)
 loss_df.to_csv(os.path.join(fixed_vars['translator_directory'], 'full_translator_loss.csv'))
-
