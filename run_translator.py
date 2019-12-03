@@ -12,6 +12,7 @@ translator_objects = get_translation_objects()
 
 for theta in range(21):
     proportion_of_data = theta / 20
+    print("Began: ", proportion_of_data)
 
     # tick = time.time()
     # print("Initialized all training objects.")
