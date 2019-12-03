@@ -75,7 +75,7 @@ def train_translator(model, translation_objects, optimizer, criterion, clip, num
 
     train_set = list(enumerate(t))[:num_examples_per_epoch]
     while True:
-        if model.number_of_batches_seen > total_num_batches:
+        if model.number_of_batches_seen >= total_num_batches:
             break
         for i, batch in train_set:
             tick = time.time()
