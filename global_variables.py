@@ -24,12 +24,12 @@ safe_mkdir(fixed_vars['autoencoder_directory'])
 safe_mkdir(fixed_vars['translator_directory'])
 
 # attempt 0
-autoencoder_hyperparameters = {'batch_size': 5,
+autoencoder_hyperparameters = {'batch_size': 40,
                                'gru_layers': 1,
                                'gru_dropout': 0.8,
                                'learning_rate': 0.0001,
-                               'retrain': True,
-                               'num_epochs': 1}
+                               'retrain': False,
+                               'num_epochs': 200}
 
 # attempt 0
 translator_hyperparameters = {'batch_size': 40,

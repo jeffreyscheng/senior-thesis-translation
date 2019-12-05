@@ -70,10 +70,10 @@ def train_translator(model, translation_objects, optimizer, criterion, clip, num
     loss_df = pd.DataFrame(columns=['batch_num', 'loss'])
     loss_list = []
     t = translation_objects['train_iterator']
-    num_examples_per_epoch = int(theta * len(t))
-    total_num_batches = num_examples_per_epoch * num_epochs / autoencoder_hyperparameters['batch_size']
+    num_batches_per_epoch = int(theta * len(t))
+    total_num_batches = num_epochs * num_batches_per_epoch
 
-    train_set = list(enumerate(t))[:num_examples_per_epoch]
+    train_set = list(enumerate(t))[:num_batches_per_epoch]
     while True:
         if model.number_of_batches_seen >= total_num_batches:
             break
