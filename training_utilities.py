@@ -71,17 +71,12 @@ def train_translator(model, translation_objects, optimizer, criterion, clip, num
     loss_list = []
     t = translation_objects['train_iterator']
     num_batches_per_epoch = int(theta * len(t))
-    total_num_batches = num_epochs * num_batches_per_epoch
 
     train_set = list(enumerate(t))[:num_batches_per_epoch]
-    while True:
-        if model.number_of_batches_seen >= total_num_batches:
-            break
+    for epoch in range(num_epochs):
         model.train()
         for i, batch in train_set:
             tick = time.time()
-            if model.number_of_batches_seen > total_num_batches:
-                break
             src = batch.src
             trg = batch.trg
             optimizer.zero_grad()
