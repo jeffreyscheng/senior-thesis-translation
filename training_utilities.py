@@ -77,6 +77,7 @@ def train_translator(model, translation_objects, optimizer, criterion, clip, num
     while True:
         if model.number_of_batches_seen >= total_num_batches:
             break
+        model.train()
         for i, batch in train_set:
             tick = time.time()
             if model.number_of_batches_seen > total_num_batches:
@@ -92,16 +93,23 @@ def train_translator(model, translation_objects, optimizer, criterion, clip, num
             torch.nn.utils.clip_grad_norm_(model.parameters(), clip)
             optimizer.step()
 
-            loss_list.append({'batch_num': model.number_of_batches_seen, 'loss': float(loss.data)})
+        model.eval()
+        losses = []
+        for i, batch in translation_objects['validation_iterator']:
+            src = batch.src
+            trg = batch.trg
+            optimizer.zero_grad()
+            output = model(src, trg)
+            output = output[1:].view(-1, output.shape[-1])
+            trg = trg[1:].view(-1)
+            loss = criterion(output, trg)
+            losses.append(loss.data)
 
-            print('Time: ', time.time() - tick, ', loss: ', loss.data)
+        loss_list.append({'batch_num': model.number_of_batches_seen, 'validation_loss': float(sum(losses)) / len(losses)})
 
-            if model.number_of_batches_seen % 2000 == 0:
-                # save gru_decoder
-                torch.save(model, os.path.join(fixed_vars['translator_directory'], str(theta) + "translator.model"))
-                # save losses
-            if model.number_of_batches_seen % 100 == 0:
-                loss_df = loss_df.append(pd.DataFrame(loss_list), ignore_index=True)
-                loss_df.to_csv(os.path.join(fixed_vars['translator_directory'], str(theta) + "loss.csv"))
-                loss_list = []
+        print('Time: ', time.time() - tick, ', loss: ', loss.data)
+        torch.save(model, os.path.join(fixed_vars['translator_directory'], str(theta) + "translator.model"))
+        loss_df = loss_df.append(pd.DataFrame(loss_list), ignore_index=True)
+        loss_df.to_csv(os.path.join(fixed_vars['translator_directory'], str(theta) + "loss.csv"))
+        loss_list = []
     return model, loss_df
