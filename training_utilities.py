@@ -95,7 +95,7 @@ def train_translator(model, translation_objects, optimizer, criterion, clip, num
 
         model.eval()
         losses = []
-        for i, batch in translation_objects['validation_iterator']:
+        for i, batch in translation_objects['valid_iterator']:
             src = batch.src
             trg = batch.trg
             optimizer.zero_grad()
