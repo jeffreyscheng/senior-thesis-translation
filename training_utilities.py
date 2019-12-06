@@ -1,6 +1,8 @@
 import torch.nn
 from torch.utils.data import Dataset
 import torchtext.data as data
+import numpy as np
+from bleu import *
 import pandas as pd
 import time
 import random
@@ -67,7 +69,7 @@ def train_autoencoder(model, autoencoder_objects, optimizer, criterion, clip, lo
 
 
 def train_translator(model, translation_objects, optimizer, criterion, clip, num_epochs, theta=1):
-    loss_df = pd.DataFrame(columns=['batch_num', 'loss'])
+    loss_df = pd.DataFrame(columns=['batch_num', 'validation_loss', 'bleu'])
     loss_list = []
     t = translation_objects['train_iterator']
     num_batches_per_epoch = int(theta * len(t))
@@ -90,17 +92,33 @@ def train_translator(model, translation_objects, optimizer, criterion, clip, num
 
         model.eval()
         losses = []
-        for i, batch in enumerate(translation_objects['valid_iterator']):
-            src = batch.src
-            trg = batch.trg
-            optimizer.zero_grad()
-            output = model(src, trg)
-            output = output[1:].view(-1, output.shape[-1])
-            trg = trg[1:].view(-1)
-            loss = criterion(output, trg)
-            losses.append(loss.data)
+        with torch.no_grad():
+            for i, batch in enumerate(translation_objects['valid_iterator']):
+                src = batch.src
+                trg = batch.trg
+                optimizer.zero_grad()
+                output = model(src, trg)
+                output = output[1:].view(-1, output.shape[-1])
+                trg = trg[1:].view(-1)
+                loss = criterion(output, trg)
+                losses.append(loss.data)
 
-        loss_list.append({'batch_num': model.number_of_batches_seen, 'validation_loss': float(sum(losses)) / len(losses)})
+        stats = np.array([0., 0., 0., 0., 0., 0., 0., 0., 0., 0.])
+        with torch.no_grad():
+            for i, batch in enumerate(translation_objects['test_iterator']):
+                tick = time.time()
+                src = batch.src.to(fixed_vars['device'])
+                trg = batch.trg.to(fixed_vars['device'])
+                output = model(src, trg, 1)
+                output = output[1:]
+                _, best_guess = torch.max(output, dim=2)
+                trg = trg[1:]
+                stats += get_bleu(best_guess, trg)
+        bleu_score = bleu(stats)
+
+        loss_list.append({'batch_num': model.number_of_batches_seen,
+                          'validation_loss': float(sum(losses)) / len(losses),
+                          'bleu': bleu_score})
 
         print('Time: ', time.time() - tick, ', loss: ', loss.data)
         torch.save(model, os.path.join(fixed_vars['translator_directory'], str(theta) + "translator.model"))
