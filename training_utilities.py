@@ -76,7 +76,6 @@ def train_translator(model, translation_objects, optimizer, criterion, clip, num
 
     train_set = list(enumerate(t))[:num_batches_per_epoch]
     for epoch in range(num_epochs):
-        model.train()
         for i, batch in train_set:
             tick = time.time()
             src = batch.src
@@ -90,7 +89,6 @@ def train_translator(model, translation_objects, optimizer, criterion, clip, num
             torch.nn.utils.clip_grad_norm_(model.parameters(), clip)
             optimizer.step()
 
-        model.eval()
         losses = []
         with torch.no_grad():
             for i, batch in enumerate(translation_objects['valid_iterator']):

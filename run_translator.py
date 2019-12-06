@@ -23,16 +23,20 @@ for proportion_of_data in proportions:
     # else:
     bert_encoder = BertModel.from_pretrained('bert-base-multilingual-cased')
     bert_encoder.to(fixed_vars['device'])
-    bert_encoder.train()
+    # bert_encoder.train()
     autoencoder = torch.load(os.path.join(fixed_vars['autoencoder_directory'], "autoencoder.model"))
 
     print("created new encoder + decoder")
     translator = Translator(bert_encoder, autoencoder.decoder, fixed_vars['device']).to(fixed_vars['device'])
-    translator_optimizer = optim.Adam(translator.parameters(), lr=translator_hyperparameters['learning_rate'])
+    translator_optimizer = optim.Adam(list(translator.decoder.parameters()) + list(translator.fc1.parameters() + list(translator.fc2.parameters())), lr=translator_hyperparameters['learning_rate'])
     PAD_IDX = 0
     criterion = nn.CrossEntropyLoss(ignore_index=PAD_IDX)
     print("Initialized all torch objects and models.  Now training.")
 
+    translator.encoder.eval()
+    translator.decoder.train()
+    translator.fc1.train()
+    translator.fc2.train()
     model, theta_loss_df = train_translator(translator,
                                             translator_objects,
                                             translator_optimizer,
