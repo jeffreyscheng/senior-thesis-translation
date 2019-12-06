@@ -5,6 +5,7 @@ from set_up_translation import get_translation_objects
 # from transformers import BertModel
 from training_utilities import train_translator
 import pandas as pd
+import gc
 import time
 
 loss_df_list = []
@@ -31,6 +32,8 @@ for proportion_of_data in proportions:
                                             proportion_of_data)
     theta_loss_df['proportion_of_data'] = proportion_of_data
     loss_df_list.append(theta_loss_df)
+    del model, baseline_model, baseline_optimizer
+    gc.collect()
     # print(time.time() - tick)
 loss_df = pd.concat(loss_df_list)
 loss_df.to_csv(os.path.join(fixed_vars['baseline_directory'], 'full_baseline_loss.csv'))
