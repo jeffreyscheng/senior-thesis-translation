@@ -50,6 +50,7 @@ def train_autoencoder(model, autoencoder_objects, optimizer, criterion, clip, lo
             trg = trg[1:].view(-1)
             loss = criterion(output, trg)
             loss.backward()
+            print('Time: ', time.time() - tick, ', Training Loss: ', loss.data)
             torch.nn.utils.clip_grad_norm_(model.parameters(), clip)
             optimizer.step()
 
