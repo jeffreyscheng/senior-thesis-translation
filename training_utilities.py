@@ -103,6 +103,7 @@ def train_translator(model, translation_objects, optimizer, criterion, clip, num
                 loss = criterion(output, trg)
                 losses.append(loss.data)
 
+        tick = time.time()
         stats = np.array([0., 0., 0., 0., 0., 0., 0., 0., 0., 0.])
         with torch.no_grad():
             for i, batch in enumerate(translation_objects['test_iterator']):
@@ -115,6 +116,7 @@ def train_translator(model, translation_objects, optimizer, criterion, clip, num
                 trg = trg[1:]
                 stats += get_bleu(best_guess, trg)
         bleu_score = bleu(stats)
+        print(time.time() - tick, "bleu:", str(bleu_score))
 
         loss_list.append({'batch_num': model.number_of_batches_seen,
                           'validation_loss': float(sum(losses)) / len(losses),
