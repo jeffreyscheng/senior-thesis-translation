@@ -29,7 +29,7 @@ for proportion_of_data in proportions:
 
     print("created new encoder + decoder")
     translator = Translator(bert_encoder, autoencoder.decoder, fixed_vars['device']).to(fixed_vars['device'])
-    translator_optimizer = optim.Adam(list(translator.decoder.parameters()) + list(translator.fc1.parameters()) + list(translator.fc2.parameters()),
+    translator_optimizer = optim.Adam(list(translator.fc1.parameters()) + list(translator.fc2.parameters()),
                                       lr=translator_hyperparameters['learning_rate'],
                                       weight_decay=10 ** (-5))
     PAD_IDX = 0
@@ -37,7 +37,7 @@ for proportion_of_data in proportions:
     print("Initialized all torch objects and models.  Now training.")
 
     translator.encoder.eval()
-    translator.decoder.train()
+    translator.decoder.eval()
     translator.fc1.train()
     translator.fc2.train()
     model, theta_loss_df = train_translator(translator,
