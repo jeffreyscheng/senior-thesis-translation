@@ -116,13 +116,13 @@ def train_translator(model, translation_objects, optimizer, criterion, clip, num
                 trg = trg[1:]
                 stats += get_bleu(best_guess, trg)
         bleu_score = bleu(stats)
-        print(time.time() - tick, "bleu:", str(bleu_score))
+        print('Epoch: ', epoch, 'Time: ', time.time() - tick, "bleu:", str(bleu_score))
 
         loss_list.append({'batch_num': model.number_of_batches_seen,
                           'validation_loss': float(sum(losses)) / len(losses),
                           'bleu': bleu_score})
 
-        print('Time: ', time.time() - tick, ', loss: ', loss.data)
+        print('Epoch: ', epoch, 'Time: ', time.time() - tick, ', loss: ', loss.data)
         torch.save(model, os.path.join(fixed_vars['translator_directory'], str(theta) + "translator.model"))
         loss_df = loss_df.append(pd.DataFrame(loss_list), ignore_index=True)
         loss_df.to_csv(os.path.join(fixed_vars['translator_directory'], str(theta) + "loss.csv"))

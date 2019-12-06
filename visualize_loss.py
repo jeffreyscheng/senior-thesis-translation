@@ -10,17 +10,31 @@ def viz_loss(path, name=''):
     loss_df = pd.read_csv(path)
     # loss_df['epoch'] = loss_df['batch_num'].apply(lambda x: x * 40 / 29000)
     loss_df['rolling_loss'] = loss_df['validation_loss'].rolling(window=10).mean()
+    loss_df['rolling_bleu'] = loss_df['bleu'].rolling(window=10).mean()
     # gca stands for 'get current axis'
     plt.clf()
     ax = plt.gca()
     # ax.set_ylim(0, 10)
-    plt.title('BALM Translator Learning Curve' + name, fontsize=16)
+    plt.title('BALM Translator Loss Curve' + name, fontsize=16)
 
     loss_df.plot(kind='line', x='batch_num', y='rolling_loss', ax=ax)
     # ax.autoscale(enable=True, axis="y", tight=False)
 
     plt.xlabel('Batch Number', fontsize=14)
-    plt.ylabel('Cross-Entropy Training Loss', fontsize=14)
+    plt.ylabel('Cross-Entropy Validation Loss', fontsize=14)
+
+    plt.show()
+
+    plt.clf()
+    ax = plt.gca()
+    # ax.set_ylim(0, 10)
+    plt.title('BALM Translator BLEU Curve' + name, fontsize=16)
+
+    loss_df.plot(kind='line', x='batch_num', y='rolling_bleu', ax=ax)
+    # ax.autoscale(enable=True, axis="y", tight=False)
+
+    plt.xlabel('Batch Number', fontsize=14)
+    plt.ylabel('BLEU', fontsize=14)
 
     plt.show()
 
