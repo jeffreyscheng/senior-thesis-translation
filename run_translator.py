@@ -28,7 +28,7 @@ for proportion_of_data in proportions:
 
     print("created new encoder + decoder")
     translator = Translator(bert_encoder, autoencoder.decoder, fixed_vars['device']).to(fixed_vars['device'])
-    translator_optimizer = optim.Adam(list(translator.decoder.parameters()) + list(translator.fc1.parameters() + list(translator.fc2.parameters())), lr=translator_hyperparameters['learning_rate'])
+    translator_optimizer = optim.Adam(list(translator.decoder.parameters()) + list(translator.fc1.parameters()) + list(translator.fc2.parameters()), lr=translator_hyperparameters['learning_rate'])
     PAD_IDX = 0
     criterion = nn.CrossEntropyLoss(ignore_index=PAD_IDX)
     print("Initialized all torch objects and models.  Now training.")
