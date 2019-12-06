@@ -12,7 +12,7 @@ fixed_vars = {'device': torch.device("cuda:0" if torch.cuda.is_available() else 
               'bert_embedding_dim': 768,
               'word_embedding_dim': 100,
               'gradient_clip': 1,
-              'autoencoder_model_number': "0",
+              'autoencoder_model_number': "1",
               'translator_model_number': "1",
               'baseline_model_number': "0"}
 

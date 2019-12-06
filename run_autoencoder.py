@@ -27,7 +27,9 @@ else:
     autoencoder = Autoencoder(bert_encoder,
                               gru_decoder,
                               fixed_vars['device']).to(fixed_vars['device'])
-autoencoder_optimizer = optim.Adam(autoencoder.decoder.parameters(), lr=autoencoder_hyperparameters['learning_rate'])
+autoencoder_optimizer = optim.Adam(autoencoder.decoder.parameters(),
+                                   lr=autoencoder_hyperparameters['learning_rate'],
+                                   weight_decay=10 ** (-5))
 PAD_IDX = 0
 criterion = nn.CrossEntropyLoss(ignore_index=PAD_IDX)
 print("Initialized all torch objects and models.  Now training.")
