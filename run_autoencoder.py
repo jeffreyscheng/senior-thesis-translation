@@ -16,7 +16,7 @@ if autoencoder_hyperparameters['retrain']:
 else:
     bert_encoder = BertModel.from_pretrained('bert-base-cased')
     bert_encoder.to(fixed_vars['device'])
-    bert_encoder.train()
+    bert_encoder.eval()
     gru_decoder = GRUDecoder(fixed_vars['word_embedding_dim'],
                              autoencoder_objects['english_bert_tokenizer'].vocab,
                              fixed_vars['bert_embedding_dim'],
@@ -27,7 +27,7 @@ else:
     autoencoder = Autoencoder(bert_encoder,
                               gru_decoder,
                               fixed_vars['device']).to(fixed_vars['device'])
-autoencoder_optimizer = optim.Adam(autoencoder.parameters(), lr=autoencoder_hyperparameters['learning_rate'])
+autoencoder_optimizer = optim.Adam(autoencoder.decoder.parameters(), lr=autoencoder_hyperparameters['learning_rate'])
 PAD_IDX = 0
 criterion = nn.CrossEntropyLoss(ignore_index=PAD_IDX)
 print("Initialized all torch objects and models.  Now training.")
