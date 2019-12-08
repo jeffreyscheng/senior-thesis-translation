@@ -11,8 +11,8 @@ import time
 loss_df_list = []
 translator_objects = get_translation_objects()
 
-proportions = [1]
-# proportions = [0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1.0]
+# proportions = [1]
+proportions = [0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1.0]
 for proportion_of_data in proportions:
     print("Began: ", proportion_of_data)
 
