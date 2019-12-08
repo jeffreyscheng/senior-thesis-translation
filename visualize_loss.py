@@ -45,5 +45,6 @@ def viz_loss(path, name=''):
 
 # viz_loss(path)
 
-for prop in [0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1.0]:
+for prop in [1]:
+# for prop in [0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1.0]:
     viz_loss(os.path.join(translator_loss_path, str(prop) + 'loss.csv'), str(prop))
