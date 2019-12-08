@@ -13,7 +13,7 @@ fixed_vars = {'device': torch.device("cuda:0" if torch.cuda.is_available() else 
               'word_embedding_dim': 100,
               'gradient_clip': 1,
               'autoencoder_model_number': "1",
-              'translator_model_number': "1",
+              'translator_model_number': "0",
               'baseline_model_number': "0"}
 
 fixed_vars['autoencoder_directory'] = os.path.join(fixed_vars['root_directory'],
@@ -32,8 +32,8 @@ autoencoder_hyperparameters = {'batch_size': 40,
                                'gru_layers': 1,
                                'gru_dropout': 0.8,
                                'learning_rate': 0.0001,
-                               'retrain': False,
-                               'num_epochs': 200}
+                               'retrain': True,
+                               'num_epochs': 300}
 
 # attempt 0
 # translator_hyperparameters = {'batch_size': 40,
@@ -45,7 +45,7 @@ autoencoder_hyperparameters = {'batch_size': 40,
 # attempt 1
 translator_hyperparameters = {'batch_size': 40,
                               'translator_dropout': 0.8,
-                              'learning_rate': 0.0005,
+                              'learning_rate': 0.0001,
                               'retrain': False,
                               'num_epochs': 200}
 

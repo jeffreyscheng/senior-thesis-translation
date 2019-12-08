@@ -37,7 +37,7 @@ for proportion_of_data in proportions:
     print("Initialized all torch objects and models.  Now training.")
 
     translator.encoder.eval()
-    translator.decoder.eval()
+    translator.decoder.train()  # effectively frozen; not in the optimizer
     translator.fc1.train()
     translator.fc2.train()
     model, theta_loss_df = train_translator(translator,
