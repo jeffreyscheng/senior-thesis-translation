@@ -12,7 +12,7 @@ fixed_vars = {'device': torch.device("cuda:0" if torch.cuda.is_available() else 
               'bert_embedding_dim': 768,
               'word_embedding_dim': 100,
               'gradient_clip': 1,
-              'autoencoder_model_number': "1",
+              'autoencoder_model_number': "0",
               'translator_model_number': "0",
               'baseline_model_number': "0"}
 
@@ -32,7 +32,7 @@ autoencoder_hyperparameters = {'batch_size': 40,
                                'gru_layers': 1,
                                'gru_dropout': 0.8,
                                'learning_rate': 0.0001,
-                               'retrain': True,
+                               'retrain': False,
                                'num_epochs': 500}
 
 # attempt 0
