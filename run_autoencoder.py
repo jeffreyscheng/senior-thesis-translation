@@ -22,7 +22,7 @@ else:
                              fixed_vars['bert_embedding_dim'],
                              autoencoder_hyperparameters['gru_layers'],
                              autoencoder_hyperparameters['gru_dropout'])
-    loss_df = pd.DataFrame(columns=['batch_num', 'loss'])
+    loss_df = pd.DataFrame(columns=['batch_num', 'validation_loss', 'bleu'])
     print("created new encoder + decoder")
     autoencoder = Autoencoder(bert_encoder,
                               gru_decoder,

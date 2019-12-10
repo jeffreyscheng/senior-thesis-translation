@@ -67,7 +67,21 @@ def train_autoencoder(model, autoencoder_objects, optimizer, criterion, clip, lo
                 losses.append(loss.data)
 
             validation_loss = float(sum(losses) / len(losses))
-            rows.append({'batch_num': model.number_of_batches_seen, 'validation_loss': validation_loss})
+
+            tick = time.time()
+            stats = np.array([0., 0., 0., 0., 0., 0., 0., 0., 0., 0.])
+            for i, batch in enumerate(autoencoder_objects['test_iterator']):
+                tick = time.time()
+                src = batch.src.to(fixed_vars['device'])
+                trg = batch.trg.to(fixed_vars['device'])
+                output = model(src, trg, 1)
+                output = output[1:]
+                _, best_guess = torch.max(output, dim=2)
+                trg = trg[1:]
+                stats += get_bleu(best_guess, trg)
+            bleu_score = bleu(stats)
+            rows.append({'batch_num': model.number_of_batches_seen, 'validation_loss': validation_loss,
+                         'bleu': bleu_score})
 
             print('Time: ', time.time() - tick, ', Validation loss: ', validation_loss)
 
@@ -113,7 +127,7 @@ def train_translator(model, translation_objects, optimizer, criterion, clip, num
         tick = time.time()
         stats = np.array([0., 0., 0., 0., 0., 0., 0., 0., 0., 0.])
         with torch.no_grad():
-            for i, batch in enumerate(translation_objects['test_iterator']):
+            for i, batch in enumerate(translation_objects['valid_iterator']):
                 tick = time.time()
                 src = batch.src.to(fixed_vars['device'])
                 trg = batch.trg.to(fixed_vars['device'])
