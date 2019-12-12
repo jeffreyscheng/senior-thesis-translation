@@ -2,7 +2,7 @@ from global_variables import *
 from models import *
 import torch.optim as optim
 from set_up_translation import get_autoencoder_objects
-from transformers import BertModel
+from transformers import BertModel, RobertaModel
 from training_utilities import train_autoencoder
 import pandas as pd
 import time
@@ -14,7 +14,10 @@ if autoencoder_hyperparameters['retrain']:
     autoencoder = torch.load(os.path.join(fixed_vars['autoencoder_directory'], "autoencoder.model"))
     loss_df = pd.read_csv(os.path.join(fixed_vars['autoencoder_directory'], "loss.csv"))
 else:
-    bert_encoder = BertModel.from_pretrained('bert-base-cased')
+    if autoencoder_hyperparameters['roberta']:
+        bert_encoder = RobertaModel.from_pretrained('roberta-base')
+    else:
+        bert_encoder = BertModel.from_pretrained('bert-base-cased')
     bert_encoder.to(fixed_vars['device'])
     bert_encoder.eval()
     gru_decoder = GRUDecoder(fixed_vars['word_embedding_dim'],

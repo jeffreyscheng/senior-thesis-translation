@@ -14,7 +14,7 @@ def viz_loss(path, name='', bleu=True):
     plt.clf()
     ax = plt.gca()
     # ax.set_ylim(0, 10)
-    plt.title('BALM Translator Loss Curve' + name, fontsize=16)
+    plt.title(name + ' Loss Curve', fontsize=16)
 
     loss_df.plot(kind='line', x='batch_num', y='rolling_loss', ax=ax)
     # ax.autoscale(enable=True, axis="y", tight=False)
@@ -29,7 +29,7 @@ def viz_loss(path, name='', bleu=True):
         plt.clf()
         ax = plt.gca()
         # ax.set_ylim(0, 10)
-        plt.title('BALM Translator BLEU Curve' + name, fontsize=16)
+        plt.title(name + ' BLEU Curve', fontsize=16)
 
         loss_df.plot(kind='line', x='batch_num', y='rolling_bleu', ax=ax)
         # ax.autoscale(enable=True, axis="y", tight=False)
@@ -44,7 +44,10 @@ def viz_loss(path, name='', bleu=True):
     # print(name, good_batch.reset_index().loc[0, 'batch_num'])
 
 
-viz_loss(path, 'auto', bleu=True)
+for model in range(2):
+    autoencoder_path = os.path.join(fixed_vars['root_directory'], 'autoencoder-' + str(model), 'loss.csv')
+    viz_loss(autoencoder_path, 'BALM Autoencoder ' + str(model), bleu=True)
+
 
 for prop in [1]:
 # for prop in [0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1.0]:

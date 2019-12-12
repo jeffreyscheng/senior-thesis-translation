@@ -10,9 +10,9 @@ def safe_mkdir(path):
 fixed_vars = {'device': torch.device("cuda:0" if torch.cuda.is_available() else "cpu"),
               'root_directory': os.path.dirname(__file__),
               'bert_embedding_dim': 768,
-              'word_embedding_dim': 200,
+              'word_embedding_dim': 100,
               'gradient_clip': 1,
-              'autoencoder_model_number': "1",
+              'autoencoder_model_number': "2",
               'translator_model_number': "0",
               'baseline_model_number': "0"}
 
@@ -27,13 +27,16 @@ safe_mkdir(fixed_vars['autoencoder_directory'])
 safe_mkdir(fixed_vars['translator_directory'])
 safe_mkdir(fixed_vars['baseline_directory'])
 
-# attempt 0
+# attempt 0: 100 word embedding
+# attempt 1: 200 word embedding
+# attempt 2: shift to Roberta
 autoencoder_hyperparameters = {'batch_size': 40,
                                'gru_layers': 1,
                                'gru_dropout': 0.8,
                                'learning_rate': 0.0001,
                                'retrain': False,
-                               'num_epochs': 500}
+                               'num_epochs': 500,
+                               'roberta': True}
 
 # attempt 0
 # translator_hyperparameters = {'batch_size': 40,

@@ -1,5 +1,5 @@
 from global_variables import *
-from transformers import BertTokenizer
+from transformers import BertTokenizer, RobertaTokenizer
 from torchtext.datasets import TranslationDataset, Multi30k
 import torchtext.data as data
 
@@ -20,7 +20,10 @@ def postprocess_replace_pad(batch, y):
 
 
 def get_autoencoder_objects():
-    english_bert_tokenizer = BertTokenizer.from_pretrained('bert-base-cased')
+    if autoencoder_hyperparameters['roberta']:
+        english_bert_tokenizer = RobertaTokenizer.from_pretrained('roberta-base')
+    else:
+        english_bert_tokenizer = BertTokenizer.from_pretrained('bert-base-cased')
 
     def get_english_field():
         return data.Field(tokenize=english_bert_tokenizer.tokenize,
@@ -55,14 +58,14 @@ def get_autoencoder_objects():
 
 
 def get_translation_objects():
-    multilingual_bert_tokenizer = BertTokenizer.from_pretrained('bert-base-multilingual-cased')
+    german_bert_tokenizer = BertTokenizer.from_pretrained('bert-base-german-cased')
     english_bert_tokenizer = BertTokenizer.from_pretrained('bert-base-cased')
     
     def get_german_field():
-        return data.Field(tokenize=multilingual_bert_tokenizer.tokenize,
+        return data.Field(tokenize=german_bert_tokenizer.tokenize,
                           init_token='[PAD]',
                           eos_token='[PAD]',
-                          preprocessing=multilingual_bert_tokenizer.convert_tokens_to_ids,
+                          preprocessing=german_bert_tokenizer.convert_tokens_to_ids,
                           postprocessing=postprocess_replace_pad,
                           use_vocab=False)  # use_vocab is false because we want Bert.
 
@@ -94,7 +97,7 @@ def get_translation_objects():
                            'train_iterator': train_iterator, 'valid_iterator': valid_iterator,
                            'test_iterator': test_iterator,
                            'english_bert_tokenizer': english_bert_tokenizer,
-                           'multilingual_bert_tokenizer': multilingual_bert_tokenizer,
+                           'german_bert_tokenizer': german_bert_tokenizer,
                            'src_field': src_field, 'trg_field': trg_field}
     return translation_objects
 

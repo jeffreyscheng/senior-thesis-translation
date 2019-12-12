@@ -22,7 +22,7 @@ for proportion_of_data in proportions:
     #     translator = torch.load(os.path.join(fixed_vars['translator_directory'], "translator.model"))
     #     loss_df = pd.read_csv(os.path.join(fixed_vars['translator_directory'], "loss.csv"))
     # else:
-    bert_encoder = BertModel.from_pretrained('bert-base-multilingual-cased')
+    bert_encoder = BertModel.from_pretrained('bert-base-german-cased')
     bert_encoder.to(fixed_vars['device'])
     # bert_encoder.train()
     autoencoder = torch.load(os.path.join(fixed_vars['autoencoder_directory'], "autoencoder.model"))
