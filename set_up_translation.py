@@ -42,7 +42,7 @@ def get_autoencoder_objects():
     print(f"Number of training examples: {len(train_data.examples)}")
     print(f"Number of validation examples: {len(valid_data.examples)}")
     print(f"Number of testing examples: {len(test_data.examples)}")
-    print("Size of target vocab: ", len(english_bert_tokenizer.vocab))
+    # print("Size of target vocab: ", len(english_bert_tokenizer.vocab))
 
     train_iterator, valid_iterator, test_iterator = data.BucketIterator.splits(
         (train_data, valid_data, test_data),
@@ -86,7 +86,7 @@ def get_translation_objects():
     print(f"Number of training examples: {len(train_data.examples)}")
     print(f"Number of validation examples: {len(valid_data.examples)}")
     print(f"Number of testing examples: {len(test_data.examples)}")
-    print("Size of target vocab: ", len(english_bert_tokenizer.vocab))
+    # print("Size of target vocab: ", len(english_bert_tokenizer.vocab))
 
     train_iterator, valid_iterator, test_iterator = data.BucketIterator.splits(
         (train_data, valid_data, test_data),
