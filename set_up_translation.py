@@ -59,7 +59,10 @@ def get_autoencoder_objects():
 
 def get_translation_objects():
     german_bert_tokenizer = BertTokenizer.from_pretrained('bert-base-german-cased')
-    english_bert_tokenizer = BertTokenizer.from_pretrained('bert-base-cased')
+    if autoencoder_hyperparameters['roberta']:
+        english_bert_tokenizer = RobertaTokenizer.from_pretrained('roberta-base')
+    else:
+        english_bert_tokenizer = BertTokenizer.from_pretrained('bert-base-cased')
     
     def get_german_field():
         return data.Field(tokenize=german_bert_tokenizer.tokenize,
