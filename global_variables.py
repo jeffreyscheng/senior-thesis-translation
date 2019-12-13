@@ -27,12 +27,12 @@ safe_mkdir(fixed_vars['autoencoder_directory'])
 safe_mkdir(fixed_vars['translator_directory'])
 safe_mkdir(fixed_vars['baseline_directory'])
 
-# attempt 0: 100 word embedding
-# attempt 1: 200 word embedding
-# attempt 2: shift to Roberta
+# attempt 0: 100 word embedding, 0.8 dropout
+# attempt 1: 200 word embedding, 0.8 dropout
+# attempt 2: 100 word embedding, 0.2 dropout
 autoencoder_hyperparameters = {'batch_size': 40,
                                'gru_layers': 1,
-                               'gru_dropout': 0.8,
+                               'gru_dropout': 0.2,
                                'learning_rate': 0.0001,
                                'retrain': False,
                                'num_epochs': 500,
