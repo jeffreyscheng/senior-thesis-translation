@@ -27,8 +27,8 @@ def get_autoencoder_objects():
 
     def get_english_field():
         return data.Field(tokenize=english_bert_tokenizer.tokenize,
-                          init_token='[PAD]',
-                          eos_token='[PAD]',
+                          init_token=english_bert_tokenizer._cls_token,
+                          eos_token=english_bert_tokenizer._eos_token,
                           preprocessing=english_bert_tokenizer.convert_tokens_to_ids,
                           postprocessing=postprocess_replace_pad,
                           use_vocab=False)  # use_vocab is false because we want Bert.
@@ -63,16 +63,16 @@ def get_translation_objects():
     
     def get_german_field():
         return data.Field(tokenize=german_bert_tokenizer.tokenize,
-                          init_token='[PAD]',
-                          eos_token='[PAD]',
+                          init_token=german_bert_tokenizer.cls_token,
+                          eos_token=german_bert_tokenizer.eos_token,
                           preprocessing=german_bert_tokenizer.convert_tokens_to_ids,
                           postprocessing=postprocess_replace_pad,
                           use_vocab=False)  # use_vocab is false because we want Bert.
 
     def get_english_field():
         return data.Field(tokenize=english_bert_tokenizer.tokenize,
-                          init_token='[PAD]',
-                          eos_token='[PAD]',
+                          init_token=english_bert_tokenizer._cls_token,
+                          eos_token=english_bert_tokenizer._eos_token,
                           preprocessing=english_bert_tokenizer.convert_tokens_to_ids,
                           postprocessing=postprocess_replace_pad,
                           use_vocab=False)  # use_vocab is false because we want Bert.

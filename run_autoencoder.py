@@ -16,12 +16,14 @@ if autoencoder_hyperparameters['retrain']:
 else:
     if autoencoder_hyperparameters['roberta']:
         bert_encoder = RobertaModel.from_pretrained('roberta-base')
+        vocab = autoencoder_objects['english_bert_tokenizer'].encoder
     else:
         bert_encoder = BertModel.from_pretrained('bert-base-cased')
+        vocab = autoencoder_objects['english_bert_tokenizer'].vocab
     bert_encoder.to(fixed_vars['device'])
     bert_encoder.eval()
     gru_decoder = GRUDecoder(fixed_vars['word_embedding_dim'],
-                             autoencoder_objects['english_bert_tokenizer'].vocab,
+                             vocab,
                              fixed_vars['bert_embedding_dim'],
                              autoencoder_hyperparameters['gru_layers'],
                              autoencoder_hyperparameters['gru_dropout'])
