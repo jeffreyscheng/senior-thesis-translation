@@ -28,14 +28,14 @@ def iter_sample_fast(iterable, sample_size):
     return results
 
 
-def train_autoencoder(model, autoencoder_objects, optimizer, criterion, clip, loss_df, num_epochs):
+def train_autoencoder(model, autoencoder_objects, optimizer, criterion, clip, original_loss_df, num_epochs):
     rows = []
     total_num_batches = len(autoencoder_objects['train_data']) * num_epochs / autoencoder_hyperparameters['batch_size']
     while True:
         if model.number_of_batches_seen > total_num_batches:
             break
+        tick = time.time()
         for i, batch in enumerate(autoencoder_objects['train_iterator']):
-            tick = time.time()
             if model.number_of_batches_seen > total_num_batches:
                 break
             src = batch.src
@@ -46,13 +46,12 @@ def train_autoencoder(model, autoencoder_objects, optimizer, criterion, clip, lo
             trg = trg[1:].view(-1)
             loss = criterion(output, trg)
             loss.backward()
-            # print('Time: ', time.time() - tick, ', Training Loss: ', loss.data)
             torch.nn.utils.clip_grad_norm_(model.parameters(), clip)
             optimizer.step()
             del src, trg, output, loss
-            print(time.time() - tick)
-            # gc.collect()
+        print("Finished training:", time.time() - tick)
 
+        tick = time.time()
         losses = []
         with torch.no_grad():
             for i, batch in enumerate(autoencoder_objects['valid_iterator']):
@@ -67,7 +66,6 @@ def train_autoencoder(model, autoencoder_objects, optimizer, criterion, clip, lo
 
             validation_loss = float(sum(losses) / len(losses))
 
-            tick = time.time()
             stats = np.array([0., 0., 0., 0., 0., 0., 0., 0., 0., 0.])
             for i, batch in enumerate(autoencoder_objects['test_iterator']):
                 tick = time.time()
@@ -82,11 +80,11 @@ def train_autoencoder(model, autoencoder_objects, optimizer, criterion, clip, lo
             rows.append({'batch_num': model.number_of_batches_seen, 'validation_loss': validation_loss,
                          'bleu': bleu_score})
 
-            print('Time: ', time.time() - tick, ', Validation loss: ', validation_loss)
+            print('Finished validating: ', time.time() - tick, ', Validation loss: ', validation_loss, "BlEU:", bleu_score)
 
             torch.save(model, os.path.join(fixed_vars['autoencoder_directory'], "autoencoder.model"))
-    loss_df = loss_df.append(pd.DataFrame(rows), ignore_index=True)
-    loss_df.to_csv(fixed_vars['autoencoder_directory'] + "/loss.csv")
+        loss_df = original_loss_df.append(pd.DataFrame(rows), ignore_index=True)
+        loss_df.to_csv(fixed_vars['autoencoder_directory'] + "/loss.csv")
     return model, loss_df
 
 
