@@ -7,7 +7,6 @@ from training_utilities import train_autoencoder
 import pandas as pd
 import time
 
-tick = time.time()
 autoencoder_objects = get_autoencoder_objects()
 print("Initialized all training objects.")
 if autoencoder_hyperparameters['retrain']:

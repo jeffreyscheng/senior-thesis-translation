@@ -1,14 +1,14 @@
 from global_variables import *
 import torch.optim as optim
 from set_up_translation import get_autoencoder_objects
-from pytorch_pretrained_bert import BertModel
+from transformers import BertModel
 from training_utilities import train_autoencoder
 import pandas as pd
 from bleu import *
 import time
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "2"
-device = torch.device("cuda:2" if torch.cuda.is_available() else "cpu")
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 autoencoder_objects = get_autoencoder_objects()
 autoencoder = torch.load(os.path.join(fixed_vars['autoencoder_directory'], "autoencoder.model"), map_location=device)
 

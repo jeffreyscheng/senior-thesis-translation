@@ -59,7 +59,10 @@ class Autoencoder(nn.Module):
         #  https://huggingface.co/transformers/model_doc/bert.html
         hidden = hidden[0]  # ignore pooled output
         hidden = torch.mean(hidden, dim=1)  # get sentence embedding from mean of word embeddings
-        hidden = hidden.unsqueeze(dim=0)
+        if self.decoder.n_layers == 2:
+            hidden = torch.stack([hidden, hidden])
+        else:
+            hidden = hidden.unsqueeze(dim=0)
 
         # first input to the decoder is the <sos> tokens
         curr_token = trg[0, :]

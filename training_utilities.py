@@ -7,6 +7,8 @@ import pandas as pd
 import time
 import random
 from global_variables import *
+import gc
+
 
 
 def iter_sample_fast(iterable, sample_size):
@@ -32,12 +34,6 @@ def train_autoencoder(model, autoencoder_objects, optimizer, criterion, clip, lo
     while True:
         if model.number_of_batches_seen > total_num_batches:
             break
-        # train_iterator, valid_iterator, test_iterator = data.BucketIterator.splits(
-        #     (autoencoder_objects['train_data'],
-        #      autoencoder_objects['valid_data'],
-        #      autoencoder_objects['test_data']),
-        #     batch_size=autoencoder_hyperparameters['batch_size'],
-        #     device=fixed_vars['device'])
         for i, batch in enumerate(autoencoder_objects['train_iterator']):
             tick = time.time()
             if model.number_of_batches_seen > total_num_batches:
@@ -53,6 +49,9 @@ def train_autoencoder(model, autoencoder_objects, optimizer, criterion, clip, lo
             # print('Time: ', time.time() - tick, ', Training Loss: ', loss.data)
             torch.nn.utils.clip_grad_norm_(model.parameters(), clip)
             optimizer.step()
+            del src, trg, output, loss
+            print(time.time() - tick)
+            # gc.collect()
 
         losses = []
         with torch.no_grad():

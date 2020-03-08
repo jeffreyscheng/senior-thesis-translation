@@ -12,7 +12,7 @@ fixed_vars = {'device': torch.device("cuda:0" if torch.cuda.is_available() else 
               'bert_embedding_dim': 768,
               'word_embedding_dim': 100,
               'gradient_clip': 1,
-              'autoencoder_model_number': "2",
+              'autoencoder_model_number': "0",
               'translator_model_number': "0",
               'baseline_model_number': "0"}
 
@@ -30,8 +30,8 @@ safe_mkdir(fixed_vars['baseline_directory'])
 # attempt 0: 100 word embedding, 0.8 dropout
 # attempt 1: 200 word embedding, 0.8 dropout
 # attempt 2: 100 word embedding, 0.2 dropout
-autoencoder_hyperparameters = {'batch_size': 40,
-                               'gru_layers': 1,
+autoencoder_hyperparameters = {'batch_size': 25,
+                               'gru_layers': 2,
                                'gru_dropout': 0.2,
                                'learning_rate': 0.0001,
                                'retrain': False,
