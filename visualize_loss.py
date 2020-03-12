@@ -44,11 +44,11 @@ def viz_loss(path, name='', bleu=True):
     # print(name, good_batch.reset_index().loc[0, 'batch_num'])
 
 
-for model in range(2):
-    autoencoder_path = os.path.join(fixed_vars['root_directory'], 'autoencoder-' + str(model), 'loss.csv')
-    viz_loss(autoencoder_path, 'BALM Autoencoder ' + str(model), bleu=True)
+# for model in range(2):
+autoencoder_path = os.path.join(fixed_vars['root_directory'], 'autoencoder-' + '0', 'loss_0.csv')
+viz_loss(autoencoder_path, 'BALM Autoencoder ' + '0', bleu=True)
 
 
-for prop in [1]:
+# for prop in [1]:
 # for prop in [0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1.0]:
-    viz_loss(os.path.join(translator_loss_path, str(prop) + 'loss.csv'), str(prop))
+#     viz_loss(os.path.join(translator_loss_path, str(prop) + 'loss.csv'), str(prop))

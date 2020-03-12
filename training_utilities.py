@@ -31,6 +31,7 @@ def iter_sample_fast(iterable, sample_size):
 def train_autoencoder(model, autoencoder_objects, optimizer, criterion, clip, original_loss_df, num_epochs):
     rows = []
     total_num_batches = len(autoencoder_objects['train_data']) * num_epochs / autoencoder_hyperparameters['batch_size']
+    loss_df = original_loss_df  # in case you're already done
     while True:
         if model.number_of_batches_seen > total_num_batches:
             break

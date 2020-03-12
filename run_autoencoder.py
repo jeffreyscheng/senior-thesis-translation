@@ -45,4 +45,3 @@ train_autoencoder(autoencoder,
                   fixed_vars['gradient_clip'],
                   loss_df,
                   autoencoder_hyperparameters['num_epochs'])
-print(time.time() - tick)
