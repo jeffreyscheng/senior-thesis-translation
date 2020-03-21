@@ -30,12 +30,12 @@ safe_mkdir(fixed_vars['baseline_directory'])
 # attempt 0: 100 word embedding, 0.8 dropout
 # attempt 1: 200 word embedding, 0.8 dropout
 # attempt 2: 100 word embedding, 0.2 dropout
-autoencoder_hyperparameters = {'batch_size': 40,
+autoencoder_hyperparameters = {'batch_size': 25,
                                'gru_layers': 2,
                                'gru_dropout': 0.2,
                                'learning_rate': 0.0001,
-                               'retrain': False,
-                               'num_epochs': 50,
+                               'retrain': True,
+                               'num_epochs': 500,
                                'roberta': True}
 
 # attempt 0

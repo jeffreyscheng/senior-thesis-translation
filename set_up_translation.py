@@ -76,18 +76,32 @@ def get_translation_objects():
     else:
         english_bert_tokenizer = BertTokenizer.from_pretrained('bert-base-cased')
 
+    ger_pad_index = german_bert_tokenizer.convert_tokens_to_ids(german_bert_tokenizer.pad_token)
+    ger_eos_index = german_bert_tokenizer.convert_tokens_to_ids(german_bert_tokenizer.eos_token)
+    ger_cls_index = german_bert_tokenizer.convert_tokens_to_ids(german_bert_tokenizer.cls_token)
+    ger_unk_index = german_bert_tokenizer.convert_tokens_to_ids(german_bert_tokenizer.unk_token)
+
+    eng_pad_index = english_bert_tokenizer.convert_tokens_to_ids(english_bert_tokenizer.pad_token)
+    eng_eos_index = english_bert_tokenizer.convert_tokens_to_ids(english_bert_tokenizer.eos_token)
+    eng_cls_index = english_bert_tokenizer.convert_tokens_to_ids(english_bert_tokenizer.cls_token)
+    eng_unk_index = english_bert_tokenizer.convert_tokens_to_ids(english_bert_tokenizer.unk_token)
+
     def get_german_field():
         return data.Field(tokenize=german_bert_tokenizer.tokenize,
-                          init_token=german_bert_tokenizer.cls_token,
-                          eos_token=german_bert_tokenizer.eos_token,
+                          init_token=ger_cls_index,
+                          eos_token=ger_eos_index,
+                          pad_token=ger_pad_index,
+                          unk_token=ger_unk_index,
                           preprocessing=german_bert_tokenizer.convert_tokens_to_ids,
                           postprocessing=postprocess_replace_pad,
                           use_vocab=False)  # use_vocab is false because we want Bert.
 
     def get_english_field():
         return data.Field(tokenize=english_bert_tokenizer.tokenize,
-                          init_token=english_bert_tokenizer._cls_token,
-                          eos_token=english_bert_tokenizer._eos_token,
+                          init_token=eng_cls_index,
+                          eos_token=eng_eos_index,
+                          pad_token=eng_pad_index,
+                          unk_token=eng_unk_index,
                           preprocessing=english_bert_tokenizer.convert_tokens_to_ids,
                           postprocessing=postprocess_replace_pad,
                           use_vocab=False)  # use_vocab is false because we want Bert.

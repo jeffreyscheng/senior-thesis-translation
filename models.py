@@ -11,6 +11,7 @@ from torch.nn.init import xavier_uniform_
 from torch.nn.modules.dropout import Dropout
 from torch.nn.modules.linear import Linear
 from torch.nn.modules.normalization import LayerNorm
+from typing import List
 
 
 
@@ -81,25 +82,34 @@ class Autoencoder(nn.Module):
 
 
 class Translator(nn.Module):
-    def __init__(self, encoder, decoder, device):
+    def __init__(self, encoder, decoder, input_dim, hidden_widths: List[int], output_dim, num_gru_layers, device):
         super().__init__()
 
         self.encoder = encoder
-        self.fc1 = nn.Linear(768, 768)
-        self.fc2 = nn.Linear(768, 768)
+        widths = [input_dim] + hidden_widths + [output_dim * num_gru_layers]
+        layers = []
+        self.relu = nn.ReLU(True)
+        for idx, width in enumerate(widths[1:]):
+            layers.append(nn.Linear(widths[idx], width))
+            if idx < len(widths) - 2:
+                layers.append(self.relu)
+        self.ffn = nn.Sequential(*layers)
         self.decoder = decoder
         self.device = device
         self.number_of_batches_seen = 0
-        self.relu = nn.ReLU(True)
+        self.num_gru_layers = num_gru_layers
+        self.output_dim = output_dim
+
 
     # only purpose is to train encoder and decoder; doesn't need one without a target
     def forward(self, src, trg, teacher_forcing_ratio=0.5):
 
-        batch_size = trg.shape[1]
         if trg is None:
             max_len = 100
+            batch_size = src.shape[1]
         else:
             max_len = trg.shape[0]
+            batch_size = trg.shape[1]
 
         outputs = torch.zeros(max_len, batch_size, self.decoder.vocab_size).to(self.device)
 
@@ -110,13 +120,15 @@ class Translator(nn.Module):
         german_thought = german_thought[0]  # ignore pooled output
         german_thought = torch.mean(german_thought, dim=1)  # get sentence embedding from mean of word embeddings
 
-        german_thought = self.fc1(german_thought)
-        german_thought = self.relu(german_thought)
-        german_thought = self.fc2(german_thought)
-        english_thought = self.relu(german_thought)
+        # german_thought = self.fc1(german_thought)
+        # german_thought = self.relu(german_thought)
+        # german_thought = self.fc2(german_thought)
+        # english_thought = self.relu(german_thought)
+        english_thought = self.ffn(german_thought)
 
         english_thought = english_thought.unsqueeze(dim=0)
-        hidden = english_thought
+        # thought_size = english_thought.size()
+        hidden = english_thought.view(self.num_gru_layers, -1, self.output_dim)
 
         # first input to the decoder is the <sos> tokens
         curr_token = trg[0, :]

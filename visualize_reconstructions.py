@@ -10,26 +10,32 @@ autoencoder = torch.load(os.path.join(fixed_vars['autoencoder_directory'], "auto
 
 autoencoder_objects = get_autoencoder_objects()
 translation_objects = get_translation_objects()
+translator = torch.load(os.path.join(fixed_vars['translator_directory'], "translator.model"),
+                         map_location=device)
+
 # example_sentence = "Hey Chris, here's an example sentence that I'm hoping to recreate."
 # example_sentence = "This is an image of a bird, which is an animal that I quite like."
 # example_sentence = "Horrible"
 
 example_sentence = "A brown dog is drinking water out of a bowl."
+german_example = "Ein brauner Hund trinkt Wasser aus einer Schüssel."
 # example_sentence = "Hey Chris, I think that this work is pretty good."
 
 
-def test_reconstruction(utterance, model, translator=True):
+def test_reconstruction(utterance, model, translator=True, trg_utterance=None):
     if not translator:
-        tokenizer = autoencoder_objects['english_bert_tokenizer']
+        e_tokenizer = autoencoder_objects['english_bert_tokenizer']
         src_field = autoencoder_objects['src_field']
-        src = autoencoder_objects['trg_field'].process([src_field.preprocess(tokenizer.tokenize(utterance))]).to(device)
+        src = autoencoder_objects['trg_field'].process([src_field.preprocess(e_tokenizer.tokenize(utterance))]).to(device)
         output = model(src, src, 1).to(device)
     if translator:
-        tokenizer = translation_objects['multilingual_bert_tokenizer']
+        g_tokenizer = translation_objects['german_bert_tokenizer']
+        e_tokenizer = translation_objects['english_bert_tokenizer']
         src_field = translation_objects['src_field']
         trg_field = translation_objects['trg_field']
-        src = trg_field.process([src_field.preprocess(tokenizer.tokenize(utterance))]).to(device)
-        output = model(src, None, 1).to(device)  # figure out trg
+        src = src_field.process([src_field.preprocess(g_tokenizer.tokenize(utterance))]).to(device)
+        trg = trg_field.process([trg_field.preprocess(e_tokenizer.tokenize(trg_utterance))]).to(device)
+        output = model(src, trg, 1).to(device)  # figure out trg
     _, best_guess = torch.max(output, dim=2)
     print(best_guess)
 
@@ -42,9 +48,9 @@ def test_reconstruction(utterance, model, translator=True):
     # print(output[4, 0, 106])
     # print(output[4, 0, 0])
 
-    print('Predicted: ', tokenizer.convert_ids_to_tokens(best_guess.permute(1, 0).flatten().tolist()))
-    print(src)
-    print('Actual: ', tokenizer.convert_ids_to_tokens(src.flatten().tolist()))
+    print('Predicted: ', e_tokenizer.convert_ids_to_tokens(best_guess.permute(1, 0).flatten().tolist()))
+
+    print('Actual: ', e_tokenizer.convert_ids_to_tokens(src.flatten().tolist()))
 
     criterion = nn.CrossEntropyLoss(ignore_index=0)
     eval_output = output[1:].view(-1, output.shape[-1])
@@ -54,4 +60,4 @@ def test_reconstruction(utterance, model, translator=True):
     print(criterion(eval_output, trg))
 
 
-test_reconstruction(example_sentence)
+test_reconstruction(german_example, model=translator, translator=True, trg_utterance=example_sentence)

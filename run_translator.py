@@ -28,8 +28,14 @@ for proportion_of_data in proportions:
     autoencoder = torch.load(os.path.join(fixed_vars['autoencoder_directory'], "autoencoder.model"))
 
     print("created new encoder + decoder")
-    translator = Translator(autoencoder.encoder, autoencoder.decoder, fixed_vars['device']).to(fixed_vars['device'])
-    translator_optimizer = optim.Adam(list(translator.fc1.parameters()) + list(translator.fc2.parameters()),
+    translator = Translator(encoder=autoencoder.encoder,
+                            decoder=autoencoder.decoder,
+                            input_dim=fixed_vars['bert_embedding_dim'],
+                            hidden_widths=[1000],
+                            output_dim=fixed_vars['bert_embedding_dim'],
+                            num_gru_layers=autoencoder_hyperparameters['gru_layers'],
+                            device=fixed_vars['device']).to(fixed_vars['device'])
+    translator_optimizer = optim.Adam(translator.ffn.parameters(),
                                       lr=translator_hyperparameters['learning_rate'],
                                       weight_decay=10 ** (-5))
     PAD_IDX = 0
@@ -38,15 +44,16 @@ for proportion_of_data in proportions:
 
     translator.encoder.eval()
     translator.decoder.train()  # effectively frozen; not in the optimizer
-    translator.fc1.train()
-    translator.fc2.train()
-    model, theta_loss_df = train_translator(translator,
-                                            translator_objects,
-                                            translator_optimizer,
-                                            criterion,
-                                            fixed_vars['gradient_clip'],
-                                            translator_hyperparameters['num_epochs'],
-                                            proportion_of_data)
+    translator.ffn.train()
+    loss_df = pd.DataFrame(columns=['batch_num', 'validation_loss', 'bleu'])
+    model, theta_loss_df = train_translator(model=translator,
+                                            translation_objects=translator_objects,
+                                            optimizer=translator_optimizer,
+                                            criterion=criterion,
+                                            clip=fixed_vars['gradient_clip'],
+                                            original_loss_df=loss_df,
+                                            num_epochs=translator_hyperparameters['num_epochs'])
+                                            # proportion_of_data)
     theta_loss_df['proportion_of_data'] = proportion_of_data
     loss_df_list.append(theta_loss_df)
     del model, translator, translator_optimizer

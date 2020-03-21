@@ -28,15 +28,15 @@ def iter_sample_fast(iterable, sample_size):
     return results
 
 
-def train_autoencoder(model, autoencoder_objects, optimizer, criterion, clip, original_loss_df, num_epochs):
+def train_translator(model, translation_objects, optimizer, criterion, clip, original_loss_df, num_epochs, path):
     rows = []
-    total_num_batches = len(autoencoder_objects['train_data']) * num_epochs / autoencoder_hyperparameters['batch_size']
+    total_num_batches = len(translation_objects['train_data']) * num_epochs / translator_hyperparameters['batch_size']
     loss_df = original_loss_df  # in case you're already done
     while True:
         if model.number_of_batches_seen > total_num_batches:
             break
         tick = time.time()
-        for i, batch in enumerate(autoencoder_objects['train_iterator']):
+        for i, batch in enumerate(translation_objects['train_iterator']):
             if model.number_of_batches_seen > total_num_batches:
                 break
             src = batch.src
@@ -55,7 +55,7 @@ def train_autoencoder(model, autoencoder_objects, optimizer, criterion, clip, or
         tick = time.time()
         losses = []
         with torch.no_grad():
-            for i, batch in enumerate(autoencoder_objects['valid_iterator']):
+            for i, batch in enumerate(translation_objects['valid_iterator']):
                 src = batch.src
                 trg = batch.trg
                 optimizer.zero_grad()
@@ -68,7 +68,7 @@ def train_autoencoder(model, autoencoder_objects, optimizer, criterion, clip, or
             validation_loss = float(sum(losses) / len(losses))
 
             stats = np.array([0., 0., 0., 0., 0., 0., 0., 0., 0., 0.])
-            for i, batch in enumerate(autoencoder_objects['test_iterator']):
+            for i, batch in enumerate(translation_objects['test_iterator']):
                 tick = time.time()
                 src = batch.src.to(fixed_vars['device'])
                 trg = batch.trg.to(fixed_vars['device'])
@@ -83,67 +83,7 @@ def train_autoencoder(model, autoencoder_objects, optimizer, criterion, clip, or
 
             print('Finished validating: ', time.time() - tick, ', Validation loss: ', validation_loss, "BlEU:", bleu_score)
 
-            torch.save(model, os.path.join(fixed_vars['autoencoder_directory'], "autoencoder.model"))
+            torch.save(model, os.path.join(path, "translator.model"))
         loss_df = original_loss_df.append(pd.DataFrame(rows), ignore_index=True)
-        loss_df.to_csv(fixed_vars['autoencoder_directory'] + "/loss.csv")
-    return model, loss_df
-
-
-def train_translator(model, translation_objects, optimizer, criterion, clip, num_epochs, theta=1):
-    loss_df = pd.DataFrame(columns=['batch_num', 'validation_loss', 'bleu'])
-    loss_list = []
-    t = translation_objects['train_iterator']
-    num_batches_per_epoch = int(theta * len(t))
-
-    train_set = list(enumerate(t))[:num_batches_per_epoch]
-    for epoch in range(num_epochs):
-        for i, batch in train_set:
-            tick = time.time()
-            src = batch.src
-            trg = batch.trg
-            optimizer.zero_grad()
-            output = model(src, trg)
-            output = output[1:].view(-1, output.shape[-1])
-            trg = trg[1:].view(-1)
-            loss = criterion(output, trg)
-            loss.backward()
-            torch.nn.utils.clip_grad_norm_(model.parameters(), clip)
-            optimizer.step()
-
-        losses = []
-        with torch.no_grad():
-            for i, batch in enumerate(translation_objects['valid_iterator']):
-                src = batch.src
-                trg = batch.trg
-                optimizer.zero_grad()
-                output = model(src, trg)
-                output = output[1:].view(-1, output.shape[-1])
-                trg = trg[1:].view(-1)
-                loss = criterion(output, trg)
-                losses.append(loss.data)
-
-        tick = time.time()
-        stats = np.array([0., 0., 0., 0., 0., 0., 0., 0., 0., 0.])
-        with torch.no_grad():
-            for i, batch in enumerate(translation_objects['valid_iterator']):
-                tick = time.time()
-                src = batch.src.to(fixed_vars['device'])
-                trg = batch.trg.to(fixed_vars['device'])
-                output = model(src, trg, 1)
-                output = output[1:]
-                _, best_guess = torch.max(output, dim=2)
-                trg = trg[1:]
-                stats += get_bleu(best_guess, trg)
-        bleu_score = bleu(stats)
-        print('Epoch: ', epoch, 'Time: ', time.time() - tick, "bleu:", str(bleu_score))
-
-        loss_list.append({'batch_num': model.number_of_batches_seen,
-                          'validation_loss': float(sum(losses)) / len(losses),
-                          'bleu': bleu_score})
-
-        print('Epoch: ', epoch, 'Time: ', time.time() - tick, ', loss: ', loss.data)
-        torch.save(model, os.path.join(fixed_vars['translator_directory'], str(theta) + "translator.model"))
-        loss_df = loss_df.append(pd.DataFrame(loss_list), ignore_index=True)
-        loss_df.to_csv(os.path.join(fixed_vars['translator_directory'], str(theta) + "loss.csv"))
-        loss_list = []
+        loss_df.to_csv(path + "/loss.csv")
     return model, loss_df
