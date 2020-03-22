@@ -8,6 +8,7 @@ import time
 import random
 from global_variables import *
 import gc
+from nltk.translate.bleu_score import sentence_bleu
 
 
 
@@ -28,7 +29,7 @@ def iter_sample_fast(iterable, sample_size):
     return results
 
 
-def train_translator(model, translation_objects, optimizer, criterion, clip, original_loss_df, num_epochs, path):
+def train_translator(model, translation_objects, optimizer, criterion, clip, original_loss_df, num_epochs, path, name):
     rows = []
     total_num_batches = len(translation_objects['train_data']) * num_epochs / translator_hyperparameters['batch_size']
     loss_df = original_loss_df  # in case you're already done
@@ -67,7 +68,8 @@ def train_translator(model, translation_objects, optimizer, criterion, clip, ori
 
             validation_loss = float(sum(losses) / len(losses))
 
-            stats = np.array([0., 0., 0., 0., 0., 0., 0., 0., 0., 0.])
+            # stats = np.array([0., 0., 0., 0., 0., 0., 0., 0., 0., 0.])
+            bleu_score_list = []
             for i, batch in enumerate(translation_objects['test_iterator']):
                 tick = time.time()
                 src = batch.src.to(fixed_vars['device'])
@@ -76,14 +78,16 @@ def train_translator(model, translation_objects, optimizer, criterion, clip, ori
                 output = output[1:]
                 _, best_guess = torch.max(output, dim=2)
                 trg = trg[1:]
-                stats += get_bleu(best_guess, trg)
-            bleu_score = bleu(stats)
+                # stats += get_bleu(best_guess, trg)
+                bleu_score_list.append(sentence_bleu(trg, best_guess))
+            # bleu_score = bleu(stats)
+            bleu_score = sum(bleu_score_list) / len(bleu_score)
             rows.append({'batch_num': model.number_of_batches_seen, 'validation_loss': validation_loss,
                          'bleu': bleu_score})
 
             print('Finished validating: ', time.time() - tick, ', Validation loss: ', validation_loss, "BlEU:", bleu_score)
 
-            torch.save(model, os.path.join(path, "translator.model"))
+            torch.save(model, os.path.join(path, name + ".model"))
         loss_df = original_loss_df.append(pd.DataFrame(rows), ignore_index=True)
         loss_df.to_csv(path + "/loss.csv")
     return model, loss_df

@@ -52,7 +52,9 @@ for proportion_of_data in proportions:
                                             criterion=criterion,
                                             clip=fixed_vars['gradient_clip'],
                                             original_loss_df=loss_df,
-                                            num_epochs=translator_hyperparameters['num_epochs'])
+                                            num_epochs=translator_hyperparameters['num_epochs'],
+                                            name='translator',
+                                            path=fixed_vars['translator_directory'])
                                             # proportion_of_data)
     theta_loss_df['proportion_of_data'] = proportion_of_data
     loss_df_list.append(theta_loss_df)
