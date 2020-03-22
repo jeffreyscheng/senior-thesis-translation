@@ -81,7 +81,7 @@ def train_translator(model, translation_objects, optimizer, criterion, clip, ori
                 # stats += get_bleu(best_guess, trg)
                 bleu_score_list.append(sentence_bleu(trg, best_guess))
             # bleu_score = bleu(stats)
-            bleu_score = sum(bleu_score_list) / len(bleu_score)
+            bleu_score = sum(bleu_score_list) / len(bleu_score_list)
             rows.append({'batch_num': model.number_of_batches_seen, 'validation_loss': validation_loss,
                          'bleu': bleu_score})
 
