@@ -90,7 +90,8 @@ class Pipeline:
                 bleu_score_list = []
                 for i, batch in enumerate(translation_objects['test_iterator']):
                     input_batch = batch.src.to(fixed_vars['device'])
-                    best_guess = self.token_ids_to_token_list(self.token_ids_to_token_ids(input_batch))
+                    output_ids = self.token_ids_to_token_ids(input_batch)
+                    best_guess = self.token_ids_to_token_list(output_ids)
                     reference_batch = batch.trg.to(fixed_vars['device'])
                     ref_tokens = self.token_ids_to_token_list(reference_batch)
                     bleu_score_list.append(self.get_bleu(ref_tokens, best_guess))
