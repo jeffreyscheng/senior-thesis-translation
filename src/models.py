@@ -16,7 +16,6 @@ from src.set_up_translation import cls_index
 from src.global_variables import fixed_vars
 
 
-
 class GRUDecoder(nn.Module):
     def __init__(self, emb_dim, vocab, hid_dim, n_layers, dropout):
         super().__init__()
