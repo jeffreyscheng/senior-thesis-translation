@@ -149,4 +149,7 @@ class GermanToEnglishTranslator(Pipeline):
         return self.english_tokenizer.convert_ids_to_tokens(output_english_ids)
 
     def token_ids_to_token_list(self, x):
-        return self.english_tokenizer.convert_ids_to_tokens(x)
+        try:
+            return self.english_tokenizer.convert_ids_to_tokens(x)
+        except:
+            return self.english_tokenizer.convert_ids_to_tokens(x.tolist())
