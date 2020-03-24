@@ -6,3 +6,6 @@
 /venv
 *.model
 *.txt
+/src/.data
+/archive
+/results
